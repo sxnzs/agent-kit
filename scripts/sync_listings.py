@@ -26,7 +26,7 @@ YAML_INDICATORS = "!&*-?|>'\"%@`#[]{},"
 
 
 def summary_of(description: str) -> str:
-    return re.split(r"\s+use\s+when\b", description, maxsplit=1, flags=re.IGNORECASE)[0].strip()
+    return re.split(r"(?<=[.!?])\s+Use when\b", description, maxsplit=1)[0].strip()
 
 
 def yaml_scalar(value: str) -> str:
@@ -64,31 +64,47 @@ def rewrite(path: Path, transform, drift: list[str], write: bool) -> None:
         path.write_text("\n".join(new_lines), encoding="utf-8")
 
 
-def require_rows(path: Path, row_re: re.Pattern[str], expected: set[str], drift: list[str]) -> None:
-    """Report skills with no row in a listing and rows that name no skill."""
+def require_rows(
+    path: Path, row_re: re.Pattern[str], expected: set[str], unparsed: set[str], folders: set[str], drift: list[str]
+) -> None:
+    """Report skills with no row in a listing and rows that belong elsewhere or name no skill."""
     if not path.is_file():
         return
     found = {m.group(1) for line in path.read_text(encoding="utf-8").split("\n") if (m := row_re.match(line))}
     for name in sorted(expected - found):
         drift.append(f"{path}: no listing row for skill {name!r} in the expected format {row_re.pattern}")
-    for name in sorted(found - expected):
-        drift.append(f"{path}: listing row names unknown skill {name!r}; delete it")
+    for name in sorted(found - expected - unparsed):
+        if name in folders:
+            drift.append(f"{path}: listing row for {name!r} is in the wrong bucket README; move it")
+        else:
+            drift.append(f"{path}: listing row names {name!r}, which has no skill folder; delete it")
 
 
 def sync(kit: Path, write: bool) -> list[str]:
     skills_dir = kit / "skills"
     skills = load_skills(skills_dir)
+    folders = {skill_dir.name for _, skill_dir in discover_skills(skills_dir)[0]}
+    unparsed = folders - set(skills)
     drift: list[str] = []
+    section: list[str] = [""]
     user_count = sum(1 for _, is_user, _ in skills.values() if is_user)
     counts = {"User": user_count, "Model": len(skills) - user_count}
 
     def top_line(line: str) -> str:
         line = TOTAL_RE.sub(f"**{len(skills)} skills**", line)
         line = KIND_COUNT_RE.sub(lambda m: f"<summary>{m.group(1)}-invoked skills ({counts[m.group(1)]})</summary>", line)
+        heading = KIND_COUNT_RE.search(line)
+        if heading:
+            section[0] = heading.group(1)
         match = TOP_ROW_RE.match(line)
         if match and match.group(1) in skills:
-            name, link, bucket, _ = match.groups()
-            return f"| [{name}]({link}) | {bucket} | {skills[name][0].replace('|', chr(92) + '|')} |"
+            name = match.group(1)
+            summary, is_user, skill_dir = skills[name]
+            kind = "User" if is_user else "Model"
+            if section[0] and section[0] != kind:
+                drift.append(f"{kit / 'README.md'}: row for {name!r} belongs in the {kind}-invoked table; move it")
+            link = "./" + skill_dir.relative_to(kit).as_posix() + "/SKILL.md"
+            return f"| [{name}]({link}) | {skill_dir.parent.name} | {summary.replace('|', chr(92) + '|')} |"
         return line
 
     def bucket_line(line: str) -> str:
@@ -108,15 +124,15 @@ def sync(kit: Path, write: bool) -> list[str]:
         return line
 
     rewrite(kit / "README.md", top_line, drift, write)
-    require_rows(kit / "README.md", TOP_ROW_RE, set(skills), drift)
+    require_rows(kit / "README.md", TOP_ROW_RE, set(skills), unparsed, folders, drift)
     for bucket_readme in sorted(skills_dir.glob("*/README.md")):
         rewrite(bucket_readme, bucket_line, drift, write)
         in_bucket = {name for name, (_, _, path) in skills.items() if path.parent == bucket_readme.parent}
-        require_rows(bucket_readme, BUCKET_ROW_RE, in_bucket, drift)
+        require_rows(bucket_readme, BUCKET_ROW_RE, in_bucket, unparsed, folders, drift)
     if "ask-kit" in skills:
         router = skills["ask-kit"][2] / "SKILL.md"
         rewrite(router, router_line, drift, write)
-        require_rows(router, ROUTER_ROW_RE, set(skills) - {"ask-kit"}, drift)
+        require_rows(router, ROUTER_ROW_RE, set(skills) - {"ask-kit"}, unparsed, folders, drift)
     for summary, _, skill_dir in skills.values():
         def twin_line(line: str, summary: str = summary) -> str:
             match = TWIN_ROW_RE.match(line)

@@ -23,7 +23,10 @@ FENCE_RE = re.compile(r"^\s*(`{3,}|~{3,})")
 INLINE_CODE_RE = re.compile(r"`([^`]+)`")
 SKILL_CALL_RE = re.compile(r'Call the Skill tool with "([^"]+)"')
 TELL_USER_RUN_RE = re.compile(r"tell the user to run\s+the\s+`?([a-z0-9-]+)`?\s+skill", re.IGNORECASE)
-BOLD_SKILL_REF_RE = re.compile(r"\b(?:suggest|run|with)\s+\*\*([a-z0-9-]+)\*\*")
+BOLD_SKILL_REF_RE = re.compile(
+    r"->\s*(?:suggest|run)\s+\*\*([a-z0-9-]+)\*\*|\b(?:suggest|run|with)\s+\*\*([a-z0-9]+(?:-[a-z0-9]+)+)\*\*",
+    re.IGNORECASE,
+)
 TELL_USER_SLASH_RE = re.compile(r"tell the user to run\s+`?/([a-z0-9-]+)`?", re.IGNORECASE)
 HOME_SKILL_PATH_RE = re.compile(r"~/\.(?:agents|claude)/skills/([a-z0-9-]+)(?:/|$|\s)")
 REL_SKILL_SUBDIR_RE = re.compile(r"(?<![a-z0-9_/-])([a-z0-9-]+)/(?:references|scripts|assets)/")
@@ -186,7 +189,7 @@ def check_cross_skill_refs(
                 )
 
         for m in BOLD_SKILL_REF_RE.finditer(cleaned):
-            target = m.group(1)
+            target = m.group(1) or m.group(2)
             if target not in skill_kinds:
                 errors.append(f"{md_path}:{line_no}: bold skill mention names unknown skill {target!r}")
 

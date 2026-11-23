@@ -23,7 +23,7 @@ def _kit(root: Path) -> Path:
     (root / "skills" / "engineering" / "README.md").write_text("* [probe](probe/SKILL.md): stale\n", encoding="utf-8")
     (root / "README.md").write_text(
         "- **9 skills** here\n<summary>Model-invoked skills (9)</summary>\n"
-        "| [probe](./skills/engineering/probe/SKILL.md) | engineering | stale |\n",
+        "| [probe](./skills/wrong/probe/SKILL.md) | wrong | stale |\n",
         encoding="utf-8",
     )
     return root
@@ -33,7 +33,9 @@ class SyncListingsTests(unittest.TestCase):
     def test_summary_stops_before_use_when(self) -> None:
         self.assertEqual(summary_of("Do a thing. Use when asked. Not for b."), "Do a thing.")
         self.assertEqual(summary_of("One sentence only."), "One sentence only.")
-        self.assertEqual(summary_of("Do a thing. use  when asked."), "Do a thing.")
+        self.assertEqual(
+            summary_of("Pick the tool to use when deploying. Use when shipping."), "Pick the tool to use when deploying."
+        )
 
     def test_yaml_scalar_quotes_only_when_needed(self) -> None:
         self.assertEqual(yaml_scalar("Plain text."), "Plain text.")
@@ -68,7 +70,17 @@ class SyncListingsTests(unittest.TestCase):
             self.assertEqual(len(drift), 3, drift)
             self.assertIn("no listing row for skill 'probe'", drift[0])
             self.assertIn("no listing row for skill 'probe'", drift[1])
-            self.assertIn("unknown skill 'ghost'", drift[2])
+            self.assertIn("'ghost', which has no skill folder", drift[2])
+
+    def test_row_in_wrong_kind_table_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            kit = _kit(Path(tmp))
+            sync(kit, write=True)
+            readme = kit / "README.md"
+            text = readme.read_text(encoding="utf-8")
+            readme.write_text(text.replace("Model-invoked skills (1)", "User-invoked skills (0)"), encoding="utf-8")
+            drift = sync(kit, write=True)
+            self.assertTrue(any("belongs in the Model-invoked table" in line for line in drift), drift)
 
 
 if __name__ == "__main__":

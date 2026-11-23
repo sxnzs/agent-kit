@@ -276,7 +276,8 @@ class CheckSkillsTests(unittest.TestCase):
                 'Call the Skill tool with "ghost-skill".\n'
                 "Otherwise tell the user to run the missing-cmd skill.\n"
                 "Or tell the user to run /user-target.\n"
-                "Then suggest **model-target** or run **ghost-skill**.\n",
+                "Then suggest **model-target** or run **ghost-skill**.\n"
+                "Start with **one** change and run **fast** checks.\n",
                 encoding="utf-8",
             )
             errors = validate_skills(skills_dir, None)
