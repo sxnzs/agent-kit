@@ -1,3 +1,3 @@
 interface:
   display_name: Design
-  short_description: Architect deep modules, maintain domain models, and build throwaway prototypes.
+  short_description: Architect deep modules, maintain domain models (CONTEXT.md and docs/adr/), and build throwaway prototypes.

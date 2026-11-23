@@ -334,7 +334,8 @@ def validate_skills(skills_dir: Path, check_symlinks: Path | None) -> list[str]:
             missing_keys = sorted({"name", "description"} - keys)
             if unknown_keys or missing_keys:
                 errors.append(
-                    f"{skill_md}: invalid frontmatter keys (unknown={unknown_keys}, missing={missing_keys})"
+                    f"{skill_md}: invalid frontmatter keys (unknown={unknown_keys}, missing={missing_keys}); "
+                    f"allowed keys are {sorted(ALLOWED_FM_KEYS)}"
                 )
             for key, raw_val in fm.items():
                 if not is_quoted_yaml(raw_val):
@@ -349,7 +350,10 @@ def validate_skills(skills_dir: Path, check_symlinks: Path | None) -> list[str]:
             if name_val != skill_dir.name:
                 errors.append(f"{skill_md}: name {name_val!r} != folder {skill_dir.name!r}")
             if not SLUG_RE.match(name_val) or len(name_val) > 64:
-                errors.append(f"{skill_md}: invalid skill slug {name_val!r}")
+                errors.append(
+                    f"{skill_md}: invalid skill slug {name_val!r} "
+                    "(lowercase letters, digits, single hyphens, at most 64 chars)"
+                )
 
             dmi_raw = fm.get("disable-model-invocation")
             if dmi_raw is not None:

@@ -1,5 +1,5 @@
 interface:
   display_name: Ambition Amplifier
-  short_description: Push a task higher on Altitude, Depth, and Range with an outside judge.
+  short_description: Push a task higher on Altitude, Depth, and Range using real tools, raw data, and an outside judge.
 policy:
   allow_implicit_invocation: false

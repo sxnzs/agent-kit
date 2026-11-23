@@ -61,6 +61,8 @@ else
 fi
 
 run_stage "skill validator unit tests" python3 scripts/test_check_skills.py
+run_stage "listings match frontmatter" python3 scripts/sync_listings.py --check
+run_stage "listings sync unit tests" python3 scripts/test_sync_listings.py
 run_stage "prose linter unit tests" python3 skills/productivity/writing/scripts/test_check_prose.py
 run_stage "prose linter (SKILL.md)" python3 skills/productivity/writing/scripts/check_prose.py --strict skills/*/*/SKILL.md
 run_stage "shell syntax" check_shell_scripts

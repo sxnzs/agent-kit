@@ -115,15 +115,15 @@ Skills are split into **user-invoked** (trigger explicitly: `/name` in Claude Co
 | Skill | Bucket | Purpose |
 |---|---|---|
 | [agent-architecture](./skills/engineering/agent-architecture/SKILL.md) | engineering | Design, review, or simplify an AI agent or harness. |
-| [debug](./skills/engineering/debug/SKILL.md) | engineering | Empirical root-cause diagnosis and git merge or rebase conflict resolution. |
-| [design](./skills/engineering/design/SKILL.md) | engineering | Deep modules, domain models (`CONTEXT.md`, `docs/adr/`), and throwaway prototypes. |
+| [debug](./skills/engineering/debug/SKILL.md) | engineering | Diagnose hard bugs or performance regressions and resolve git merge or rebase conflicts. |
+| [design](./skills/engineering/design/SKILL.md) | engineering | Architect deep modules, maintain domain models (CONTEXT.md and docs/adr/), and build throwaway prototypes. |
 | [diff-review](./skills/engineering/diff-review/SKILL.md) | engineering | Verification-artifact-first code review and concise PR summaries. |
-| [explain-code](./skills/productivity/explain-code/SKILL.md) | productivity | Evidence-backed code explanations anchored in files, call paths, and history. |
-| [grill](./skills/productivity/grill/SKILL.md) | productivity | Decision-tree design interviews to stress-test ideas and settle requirements. |
-| [jev-search](./skills/productivity/jev-search/SKILL.md) | productivity | Web search where result relevance matters, ranked by TypeSafe Jev. |
+| [explain-code](./skills/productivity/explain-code/SKILL.md) | productivity | Give the reader a working mental model of code and the evidence behind why it was built that way. |
+| [grill](./skills/productivity/grill/SKILL.md) | productivity | Interview the user relentlessly until every branch of the design tree is settled. |
+| [jev-search](./skills/productivity/jev-search/SKILL.md) | productivity | Search the web where result relevance matters, ranked by TypeSafe Jev. |
 | [skill-hygiene](./skills/engineering/skill-hygiene/SKILL.md) | engineering | Create, audit, deduplicate, or prune skills, tool descriptions, and system prompts. |
-| [ui-design](./skills/engineering/ui-design/SKILL.md) | engineering | Flows, states, in-place prototypes, visual tokens, and motion physics. |
-| [verify-artifacts](./skills/engineering/verify-artifacts/SKILL.md) | engineering | Layer 3 runtime, browser, CLI, and visual verification artifacts and done-checking claimed work. |
+| [ui-design](./skills/engineering/ui-design/SKILL.md) | engineering | Design flows, states, and interactions with prototypes, set concrete visual tokens (type, color, theme), and tune animation and gesture physics by observed behavior. |
+| [verify-artifacts](./skills/engineering/verify-artifacts/SKILL.md) | engineering | Produce Layer 3 runtime, browser, CLI, and visual verification artifacts, or done-check claimed work. |
 | [writing](./skills/productivity/writing/SKILL.md) | productivity | Writing workflow from raw fragments through grounded beats to shaped prose. |
 
 </details>
@@ -173,7 +173,7 @@ See [`SCOPE.md`](./SCOPE.md): skills change only for a failure observed in a rea
 
 **Private overlay.** `AGENTS.md` here holds only rules that fit anyone. Put your own version at `~/.config/agent-kit/AGENTS.md` (start from a copy) and `./install.sh` links every host to it instead, so machine names, paths, and personal rules never enter the repo. `~/.config/agent-kit/CLAUDE.md` does the same for the Claude Code rules. Set `AGENT_KIT_LOCAL` to use another folder.
 
-1. **New skill:** add a folder under `skills/<bucket>/<name>/` with `SKILL.md` and `agents/openai.yaml`, list it in the bucket `README.md` and `ask-kit`, run `./scripts/verify`, then run `./install.sh`.
+1. **New skill:** add a folder under `skills/<bucket>/<name>/` with `SKILL.md` and `agents/openai.yaml`, list it in the bucket `README.md`, the top `README.md` and `ask-kit`, run `python3 scripts/sync_listings.py` and `./scripts/verify`, then run `./install.sh`.
 2. **New hard rule:** add a regex to `guard/policy.json` (and mirror ask rules in `adapters/codex/rules/agent-kit.rules`), add a test case to `CASES` in `guard/guard.py`, and run `./guard/check.sh`.
 3. **New global instruction:** only add to `AGENTS.md` if it is true for every task; otherwise make it a skill.
 4. **Verify before pushing:** `./scripts/verify` runs guard checks, skill validation, unit tests, prose linting, and `shellcheck`.

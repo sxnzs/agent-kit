@@ -1,3 +1,3 @@
 interface:
   display_name: UI Design
-  short_description: Design flows, visual tokens, and animation physics with prototypes.
+  short_description: Design flows, states, and interactions with prototypes, set concrete visual tokens (type, color, theme), and tune animation and gesture physics by observed behavior.

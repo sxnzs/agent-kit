@@ -1,5 +1,5 @@
 interface:
   display_name: Retro
-  short_description: Run a session retrospective and promote repeated corrections into deterministic checks.
+  short_description: Run a session retrospective and promote repeated corrections downward into deterministic checks.
 policy:
   allow_implicit_invocation: false

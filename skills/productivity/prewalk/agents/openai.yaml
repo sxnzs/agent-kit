@@ -1,5 +1,5 @@
 interface:
   display_name: Prewalk
-  short_description: Land the first real slice and hand off the live trajectory to a fast worker.
+  short_description: Land the first real slice or opening section and hand off the live trajectory and check gate to a fast worker.
 policy:
   allow_implicit_invocation: false

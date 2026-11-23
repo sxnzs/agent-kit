@@ -1,5 +1,5 @@
 interface:
   display_name: Bonsai
-  short_description: Refactor a whole repo in five gated phases with tool-enforced checks.
+  short_description: Refactor a whole repo in five gated phases so boundaries, bans, and checks live in tools instead of prose.
 policy:
   allow_implicit_invocation: false
