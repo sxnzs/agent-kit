@@ -275,11 +275,12 @@ class CheckSkillsTests(unittest.TestCase):
                 'Call the Skill tool with "user-target".\n'
                 'Call the Skill tool with "ghost-skill".\n'
                 "Otherwise tell the user to run the missing-cmd skill.\n"
-                "Or tell the user to run /user-target.\n",
+                "Or tell the user to run /user-target.\n"
+                "Then suggest **model-target** or run **ghost-skill**.\n",
                 encoding="utf-8",
             )
             errors = validate_skills(skills_dir, None)
-            self.assertEqual(len(errors), 7, errors)
+            self.assertEqual(len(errors), 8, errors)
             self.assertIn("link leaves skill folder", errors[0])
             self.assertIn("backticked path points into another skill 'model-target'", errors[1])
             self.assertIn("backticked path points into another skill 'model-target'", errors[2])
@@ -287,6 +288,7 @@ class CheckSkillsTests(unittest.TestCase):
             self.assertIn("Skill tool call targets unknown skill 'ghost-skill'", errors[4])
             self.assertIn("'tell the user to run the missing-cmd skill' names unknown skill", errors[5])
             self.assertIn("use host-neutral 'tell the user to run the user-target skill'", errors[6])
+            self.assertIn("bold skill mention names unknown skill 'ghost-skill'", errors[7])
 
     def test_bucket_readme_and_ask_kit_listing_enforced(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
