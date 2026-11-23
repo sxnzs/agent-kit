@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Agent Kit installer. One source of truth, linked into Claude Code, Codex, OpenCode, Pi and Gemini/Antigravity.
+# Amnesiac Agents installer. One source of truth, linked into Claude Code, Codex, OpenCode, Pi and Gemini/Antigravity.
 # Cursor needs no install step: it loads the kit as a plugin (see README).
 #
 #   ./install.sh                 install for every host found on this machine

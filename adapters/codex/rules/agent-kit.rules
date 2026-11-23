@@ -1,4 +1,4 @@
-# Agent Kit rules for Codex. install.sh copies this to ~/.codex/rules/agent-kit.rules with @KIT@ set to the kit path.
+# Amnesiac Agents rules for Codex. install.sh copies this to ~/.codex/rules/agent-kit.rules with @KIT@ set to the kit path.
 # Mirrors the "ask" list in guard/policy.json. Deny is enforced by the guard hook.
 # Each block names the policy rule it mirrors as "# policy: <name>", and guard/check.sh fails when an ask rule
 # has no mirror here.

@@ -1,11 +1,11 @@
-# Getting started with Agent Kit
+# Getting started with Amnesiac Agents
 
 This guide walks through installing `agent-kit` on a new machine, running your first task, and keeping multiple machines in sync.
 
 ## 1. Install on a new machine
 
 ```bash
-git clone https://github.com/sxnzs/agent-kit.git ~/agent-kit
+git clone https://github.com/sxnzs/amnesiac-agents.git ~/agent-kit
 cd ~/agent-kit
 ./install.sh --dry-run
 ./install.sh

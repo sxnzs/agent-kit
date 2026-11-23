@@ -4,7 +4,7 @@
 
 ## Claude Code
 
-- **Skills:** symlinked into `~/.claude/skills/*` (also available via `/plugin marketplace add sxnzs/agent-kit` + `/plugin install agent-kit@agent-kit`).
+- **Skills:** symlinked into `~/.claude/skills/*` (also available via `/plugin marketplace add sxnzs/amnesiac-agents` + `/plugin install amnesiac-agents@amnesiac-agents`).
 - **Instructions:** `adapters/claude/CLAUDE.md` is linked to `~/.claude/CLAUDE.md` and imports `~/.agents/AGENTS.md`. If you already have a `CLAUDE.md`, `install.sh` keeps it and adds the import line at the top.
 - **Guard:** `PreToolUse` hook runs `guard/guard.py` (merged into `~/.claude/settings.json`).
 - **Subagents:** `verifier.md` symlinked into `~/.claude/agents/`.
@@ -38,7 +38,7 @@
 
 ## Cursor
 
-- **Plugin install:** clone the repo into `~/.cursor/plugins/local/agent-kit` and restart Cursor. It reads `.cursor-plugin/plugin.json` and loads `skills/engineering`, `skills/productivity`, and the verifier agent. `install.sh` does not touch Cursor.
+- **Plugin install:** clone the repo into `~/.cursor/plugins/local/amnesiac-agents` and restart Cursor. It reads `.cursor-plugin/plugin.json` and loads `skills/engineering`, `skills/productivity`, and the verifier agent. `install.sh` does not touch Cursor.
 
 ## Private overlay
 

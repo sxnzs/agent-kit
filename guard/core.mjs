@@ -1,4 +1,4 @@
-// Agent Kit guard core for JavaScript hosts (OpenCode plugin, Pi extension).
+// Amnesiac Agents guard core for JavaScript hosts (OpenCode plugin, Pi extension).
 // Mirrors guard.py. Policy: ~/.agents/agent-kit/guard/policy.json (or AGENT_KIT_POLICY).
 // Parity check: node guard/parity.mjs
 import { readFileSync } from "node:fs";

@@ -1,4 +1,4 @@
-# Agent Kit baseline for Codex. Copied to ~/.codex/config.toml only if you have none.
+# Amnesiac Agents baseline for Codex. Copied to ~/.codex/config.toml only if you have none.
 # If you already have one, merge these keys by hand (the installer will not touch it).
 
 approval_policy = "on-request"

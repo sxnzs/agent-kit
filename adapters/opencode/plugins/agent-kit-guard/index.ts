@@ -1,4 +1,4 @@
-// Agent Kit guard for OpenCode 2.x. Installed to ~/.config/opencode/plugins/.
+// Amnesiac Agents guard for OpenCode 2.x. Installed to ~/.config/opencode/plugins/.
 // Runs as a permission "evaluate" hook, so deny and ask both go through OpenCode's own
 // permission flow and win over any configured allow (an explicit configured deny is
 // final and never reaches the hook). V2 loads a default export with an id and setup().

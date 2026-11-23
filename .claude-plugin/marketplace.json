@@ -1,12 +1,12 @@
 {
-  "name": "agent-kit",
+  "name": "amnesiac-agents",
   "owner": {
     "name": "Santiago Sainz",
     "email": "250898791+sxnzs@users.noreply.github.com"
   },
   "plugins": [
     {
-      "name": "agent-kit",
+      "name": "amnesiac-agents",
       "source": "./",
       "description": "One agent setup for Claude Code, Codex, OpenCode, Pi, Gemini/Antigravity, and Cursor: skills, guards, and adapters from a single source of truth."
     }

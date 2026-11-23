@@ -1,4 +1,4 @@
-// Agent Kit guard for Pi. Installed to ~/.pi/agent/extensions/.
+// Amnesiac Agents guard for Pi. Installed to ~/.pi/agent/extensions/.
 // Deny rules block. Ask rules open a confirm dialog, and block when there is no UI (pi -p).
 // Type only import: erased at load time, so it works with either package name.
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";

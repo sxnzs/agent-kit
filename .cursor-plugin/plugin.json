@@ -1,17 +1,17 @@
 {
-  "name": "agent-kit",
-  "displayName": "Agent Kit",
+  "name": "amnesiac-agents",
+  "displayName": "Amnesiac Agents",
   "version": "1.0.0",
   "description": "One agent setup for Claude Code, Codex, OpenCode, Pi, Gemini/Antigravity, and Cursor: skills, guards, and adapters from a single source of truth.",
   "author": {
     "name": "Santiago Sainz"
   },
-  "homepage": "https://github.com/sxnzs/agent-kit",
-  "repository": "https://github.com/sxnzs/agent-kit",
+  "homepage": "https://github.com/sxnzs/amnesiac-agents",
+  "repository": "https://github.com/sxnzs/amnesiac-agents",
   "license": "MIT",
   "category": "developer-tools",
   "keywords": [
-    "agent-kit",
+    "amnesiac-agents",
     "skills",
     "workflow",
     "engineering",

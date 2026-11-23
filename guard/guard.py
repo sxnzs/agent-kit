@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Agent Kit guard: PreToolUse hook for Claude Code and Codex CLI.
+"""Amnesiac Agents guard: PreToolUse hook for Claude Code and Codex CLI.
 
 Both hosts send JSON on stdin ({tool_name, tool_input, ...}) and accept the
 same hookSpecificOutput reply, so one script serves both.

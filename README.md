@@ -1,6 +1,6 @@
-# Agent Kit
+# Amnesiac Agents
 
-[![verify](https://github.com/sxnzs/agent-kit/actions/workflows/verify.yml/badge.svg)](https://github.com/sxnzs/agent-kit/actions/workflows/verify.yml)
+[![verify](https://github.com/sxnzs/amnesiac-agents/actions/workflows/verify.yml/badge.svg)](https://github.com/sxnzs/amnesiac-agents/actions/workflows/verify.yml)
 
 One setup for **Claude Code, Codex, OpenCode, Pi, Gemini/Antigravity, and Cursor**, built on the single-loop pattern:
 one model, one context, skills and tools that load on demand, hard limits in the harness, and a subagent only when it earns its place.
@@ -21,7 +21,7 @@ Requirements: macOS or Linux, `bash`, `python3`, `git`, and `jq` for the Claude 
 ### Recommended: clone + `install.sh` (all hosts, guards, and adapters)
 
 ```bash
-git clone https://github.com/sxnzs/agent-kit.git ~/agent-kit
+git clone https://github.com/sxnzs/amnesiac-agents.git ~/agent-kit
 cd ~/agent-kit
 ./install.sh --dry-run              # preview what will change
 ./install.sh                        # install for every host detected on this machine
@@ -52,14 +52,14 @@ cd ~/agent-kit && git pull && ./install.sh
 In Claude Code:
 
 ```bash
-/plugin marketplace add sxnzs/agent-kit
-/plugin install agent-kit@agent-kit
+/plugin marketplace add sxnzs/amnesiac-agents
+/plugin install amnesiac-agents@amnesiac-agents
 ```
 
 In Cursor, clone into the local plugins folder and restart Cursor (it skips symlinks that point outside that folder). This path follows Cursor's plugin docs and the manifest validates, but it has not been tested in Cursor yet:
 
 ```bash
-git clone https://github.com/sxnzs/agent-kit.git ~/.cursor/plugins/local/agent-kit
+git clone https://github.com/sxnzs/amnesiac-agents.git ~/.cursor/plugins/local/amnesiac-agents
 ```
 
 > Native plugin install gives you the skills and the verifier subagent. Use `./install.sh` when you also want the shared `AGENTS.md`, `guard/policy.json` hooks, `bin/cm` code-mode helper, and Codex/OpenCode/Pi/Gemini wiring. The `writing` and `jev-search` skills call their scripts under `~/.agents/skills/`, so those two need `./install.sh`.
