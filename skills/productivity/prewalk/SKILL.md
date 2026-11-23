@@ -36,7 +36,7 @@ Prime a fast model with one landed example and one deterministic check instead o
    - The prose check command that `writing` names.
 4. Hand off the exemplar path, fixed glossary of technical terms, remaining section outline, and exact lint command.
 
-## 3. Walker step (fast model, e.g. DeepSeek V4.1 Flash 1017)
+## 3. Walker step (fast model)
 
 1. Read the landed exemplar first. Match its exact structure, imports, error handling, naming, and tone. Do not invent parallel helpers, swap synonyms for defined terms, or shift register.
 2. Never add comments to explain obvious code or excuse shortcuts. Fix the root cause.
@@ -52,7 +52,7 @@ Prime a fast model with one landed example and one deterministic check instead o
 The producer never grades its own prose.
 
 - **Code**: if the gate covers types, lint, boundaries, and tests, only run a frontier diff review when the diff crosses a tricky boundary or changes public behavior.
-- **Spanish and human prose over ~500 words**: flash models drift back toward stiff syntax and English calques across long runs. Once the walker finishes drafting and passes the deterministic lint check, run one short frontier pass for voice, cadence, and factual alignment against sources.
+- **Spanish and human prose over ~500 words**: fast models drift back toward stiff syntax and English calques across long runs. Once the walker finishes drafting and passes the deterministic lint check, run one short frontier pass for voice, cadence, and factual alignment against sources.
 
 ## Re-arming
 

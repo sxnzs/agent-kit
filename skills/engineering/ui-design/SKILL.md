@@ -24,8 +24,8 @@ trade-offs, reconstructable prototypes and any unresolved choice.
 
 - Establish the task, frequency and constraints from available evidence. Reuse
   current components and conventions. If the audience or desired outcome is
-  unresolved, Call the Skill tool with "grill".
-  before designing flows around an invented user.
+  unresolved, settle it before designing flows around an invented user.
+  Call the Skill tool with "grill".
 - Prototype the smallest surface that answers the open question. Vary a named
   axis such as inline editing versus a dialog. Use realistic content, complete
   interactions and equally careful execution; a button question needs no new

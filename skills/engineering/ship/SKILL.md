@@ -11,8 +11,9 @@ push to every remote unless they said local only.
 
 ## Steps
 
-1. List the repos this session changed. For a wide sweep, run **repo-status** instead of
-   rescanning. Read `git status --short` and `git diff --stat` in each one.
+1. List the repos this session changed. For a wide sweep, use the host's repo status skill when
+   one is installed instead of rescanning. Read `git status --short` and `git diff --stat` in
+   each one.
 2. Stage only the files this work changed. Leave out scratch output, `__pycache__`, build dirs,
    and changes someone else made (an unfamiliar diff hunk counts). Name what you left out.
 3. Write the message: a subject that says what changed, then why. For a fix, name the confirmed

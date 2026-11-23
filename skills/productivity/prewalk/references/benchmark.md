@@ -1,4 +1,4 @@
-# DeepSeek 4.1 Flash 1017 quality benchmark prompts
+# Fast worker quality benchmark prompts
 
 Run these before and after prewalk to verify real improvement:
 

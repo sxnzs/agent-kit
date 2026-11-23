@@ -15,7 +15,7 @@ Done when each item is one line with a quote or a file reference.
 
 ## 2. Check the past, on request
 
-Only when the owner asks to look across earlier sessions, use the recall skill to search them for the same class of correction. Read [past-session search](references/past-sessions.md) when this path applies.
+Only when the owner asks to look across earlier sessions, search them for the same class of correction with the host's session search skill when one is installed, otherwise by searching its session transcripts. Read [past-session search](references/past-sessions.md) when this path applies.
 Done when either no past search was requested, or every matching earlier hit is added to the list with its session reference.
 
 ## 3. Route

@@ -16,8 +16,8 @@ that informed the choice. A presentation awaiting selection remains pending.
 
 - Inspect existing tokens, components, brand references and the surrounding
   surface. Reuse the user's chosen direction and project language. If the
-  audience or desired outcome is unsettled, run the grill workflow in **design**
-  (Call the Skill tool with "grill".) before choosing an identity for them.
+  audience or desired outcome is unsettled, settle it before choosing an
+  identity for them. Call the Skill tool with "grill".
 - Compare distinct directions on a named axis when the look is open.
   Typography, density, contrast or material may change the character; palette
   swaps alone may not. Size the experiment to the question, and do not force
