@@ -51,9 +51,8 @@ Do not invent a rationale; "no recorded reason" is a valid answer.
 
 ## Handoffs
 
-**run** continues into that skill or reference with this context unless the request stops
-short of it, then it is only suggested. **suggest** names it in one closing line
-once the deliverable is final and never continues unasked.
+**suggest** names a skill in one closing line once the deliverable is final and
+never continues unasked.
 
 - The code misbehaves -> suggest **debug**
 - The answer lives outside the repo -> tell the user to run the handoff skill

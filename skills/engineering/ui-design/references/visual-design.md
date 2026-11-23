@@ -59,10 +59,7 @@ the existing design system rather than creating a parallel one.
 
 ## Handoffs
 
-**run** continues into that skill or reference with this context unless the request stops
-short of it, then it is only suggested. **suggest** names it in one closing line
-once the deliverable is final and never continues unasked. A missing skill never
-blocks; do the work inline.
+A missing skill never blocks; do the work inline.
 
 - The outcome is unsettled -> Call the Skill tool with "grill".
 - Flow or interaction behavior is the question -> follow [SKILL.md](../SKILL.md)

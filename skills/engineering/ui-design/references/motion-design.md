@@ -43,10 +43,8 @@ checks and any feel or device testing that remains unverified.
 
 ## Handoffs
 
-**run** continues into that skill or reference with this context unless the request stops
-short of it, then it is only suggested. **suggest** names it in one closing line
-once the deliverable is final and never continues unasked. A missing skill never
-blocks; do the work inline.
+**suggest** names a skill in one closing line once the deliverable is final and
+never continues unasked. A missing skill never blocks; do the work inline.
 
 - The motion is part of an unsettled flow -> follow [SKILL.md](../SKILL.md)
 - The settled motion is ready to build -> tell the user to run the spec-build skill

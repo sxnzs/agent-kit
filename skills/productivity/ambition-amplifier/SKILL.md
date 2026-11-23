@@ -6,8 +6,6 @@ disable-model-invocation: true
 
 # Ambition Amplifier
 
-Run this skill only when the user calls it by name. On ordinary tasks, do the task as asked and do not apply these lenses.
-
 Based on Felix Rieseberg's "How to be more ambitious" (October 2026). Don't just run the task as it was asked. Find the more ambitious version, show it to the user, and then do it with real tools, real data and an outside check.
 
 There are four kinds of ambition. Speed comes free. This skill covers the other three: **Altitude**, **Depth** and **Range**.
@@ -52,7 +50,7 @@ Then work by these rules:
 
 1. **Turn nouns into verbs.** Restate the deliverable as what it actually does. A deck becomes "getting busy people to believe a cause and effect story and decide under uncertainty in 30 minutes."
 2. **Assemble the crew.** Ask who humanity would send if failure were not an option. Pick 3 to 6 fields, for example analyst, journalist, editor, motion or audio designer, and a red team such as a short seller or forensic accountant.
-3. **Use methods, not roles.** Each field contributes what it actually does, such as a short seller's research process or an editor's structural cut. Never have it simply write in that field's voice. When subagents are available, give each field its own subagent with its own brief and merge the results. The red team goes last and attacks the merged draft.
+3. **Use methods, not roles.** Each field contributes what it actually does, such as a short seller's research process or an editor's structural cut. Never have it simply write in that field's voice. When subagents are available, give each field its own subagent with a fresh context window and its own brief, then merge the results. The red team goes last and attacks the merged draft.
 
 ## Step 4. Integrate and verify
 

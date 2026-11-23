@@ -54,10 +54,6 @@ the submission for them. Create persistent learning artifacts only when requeste
 
 ## Handoffs
 
-**run** continues into that skill or reference with this context unless the request stops
-short of it, then it is only suggested. **suggest** names it in one closing line
-once the deliverable is final and never continues unasked.
-
 - The user wants a decision made, not explained -> Call the Skill tool with "grill".
 - The topic is a fact to look up -> tell the user to run the handoff skill
 - The topic is this codebase -> Call the Skill tool with "explain-code".

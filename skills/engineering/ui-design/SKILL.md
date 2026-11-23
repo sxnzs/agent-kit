@@ -63,10 +63,7 @@ helper skills and tools do not create new prerequisites.
 
 ## Handoffs
 
-**run** continues into that skill or reference with this context unless the request stops
-short of it, then it is only suggested. **suggest** names it in one closing line
-once the deliverable is final and never continues unasked. A missing skill never
-blocks; do the work inline.
+A missing skill never blocks; do the work inline.
 
 - The outcome or audience is unsettled -> Call the Skill tool with "grill".
 - Identity or aesthetic character is the question -> read [visual-design.md](references/visual-design.md)

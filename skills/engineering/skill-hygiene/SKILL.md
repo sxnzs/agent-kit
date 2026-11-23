@@ -18,7 +18,7 @@ Skills are Layer 4 prose in the Inverse Trust Pyramid. Keep them lean, change th
 5. **Codex twin**: create `agents/openai.yaml` with `interface.display_name` and `interface.short_description`. User-invoked skills add `policy.allow_implicit_invocation: false`; model-invoked skills omit it. Both files must agree.
 6. **Calling another skill**: for a model-invoked skill, write `Call the Skill tool with "<name>".` (one skill per call). For a user-invoked skill, write `tell the user to run the <name> skill`. Never link or write a backticked path that leaves the skill folder.
 7. **Body and references**: keep `SKILL.md` under 500 lines holding steps and routing. Move path-specific detail into `references/` and state when to read each file. End every step on a condition the agent can check. Any step that dispatches a subagent must start it with a fresh context window. Put deterministic work in `scripts/` and state when to run it.
-8. **Listings and checks**: add the skill to its bucket `README.md` under "User-invoked" or "Model-invoked", add it to the top `README.md`, and add every user-invoked skill to `ask-kit`. Run `./scripts/verify` (including `check_prose.py --strict`, no prose dashes) until all stages pass.
+8. **Listings and checks**: add the skill to its bucket `README.md` under "User-invoked" or "Model-invoked", add it to the top `README.md`, and add it to `ask-kit`. Run `./scripts/verify` (including `check_prose.py --strict`, no prose dashes) until all stages pass.
 
 ## Auditing a library
 

@@ -32,8 +32,8 @@ a draft.
   map, stack and every real command stay bare; cut what a linter or formatter
   enforces and what the code already shows; point to files instead of pasting
   snippets that go stale. Give each rule that applies to one kind of work a
-  narrow trigger. See [instruction file](references/instruction-file.md); write
-  the prose with **writing**.
+  narrow trigger. See [instruction file](references/instruction-file.md). For
+  agent-facing prose, Call the Skill tool with "skill-hygiene".
 - Where agents need to prove behavior the way a user sees it, build a
   [verification loop](references/verification-loop.md): launch, doctor, drive,
   evidence, cleanup, seeded with a feature map. Run it end to end on one
@@ -53,11 +53,10 @@ pushing or enabling a workflow.
 
 ## Handoffs
 
-**run** continues into that skill with this context unless the request stops
-short of it, then it is only suggested. **suggest** names it in one closing line
-once the deliverable is final and never continues unasked.
+**suggest** names a skill in one closing line once the deliverable is final and
+never continues unasked.
 
-- The instruction file's prose needs writing -> Call the Skill tool with "writing".
+- The instruction file's prose needs writing -> Call the Skill tool with "skill-hygiene".
 - A tool or platform's behavior is unknown -> tell the user to run the handoff skill
 - A verification loop or hook is built -> Call the Skill tool with "verify-artifacts".
 - A required behavior needs building test-first -> tell the user to run the spec-build skill
