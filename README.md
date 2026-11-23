@@ -96,7 +96,7 @@ Skills are split into **user-invoked** (trigger explicitly: `/name` in Claude Co
 |---|---|---|
 | [agent-setup](./skills/engineering/agent-setup/SKILL.md) | engineering | Onboard a repository for agents and fix recurring session failures without a full rewrite. |
 | [ambition-amplifier](./skills/productivity/ambition-amplifier/SKILL.md) | productivity | Push a task higher on Altitude, Depth, and Range using real tools, raw data, and an outside judge. |
-| [ask-kit](./skills/productivity/ask-kit/SKILL.md) | productivity | Map every user-invoked skill by workflow stage so you only need to remember one name. |
+| [ask-kit](./skills/productivity/ask-kit/SKILL.md) | productivity | Map every skill by workflow stage so you only need to remember one name. |
 | [bonsai](./skills/engineering/bonsai/SKILL.md) | engineering | Refactor a whole repo in five gated phases so boundaries, bans, and checks live in tools instead of prose. |
 | [fold-subagent](./skills/engineering/fold-subagent/SKILL.md) | engineering | Fold an unnecessary subagent, router, or specialist into skills and tools in the main loop. |
 | [handoff](./skills/productivity/handoff/SKILL.md) | productivity | Delegate primary-source research, write cross-session handoffs, and script human-only setup wizards. |
