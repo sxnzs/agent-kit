@@ -1,0 +1,150 @@
+# Agent Kit rules for Codex. install.sh copies this to ~/.codex/rules/agent-kit.rules with @KIT@ set to the kit path.
+# Mirrors the "ask" list in guard/policy.json. Deny is enforced by the guard hook.
+# Each block names the policy rule it mirrors as "# policy: <name>", and guard/check.sh fails when an ask rule
+# has no mirror here.
+#
+# hook-only: guard-shell-write
+# guard-shell-write is a shell regex the prefix DSL cannot express. Claude Code, OpenCode and Pi enforce it; in
+# Codex, shell writes into the kit's own guard directory are not gated.
+#
+# Test: codex execpolicy check --pretty --rules ~/.codex/rules/agent-kit.rules -- git commit -m x
+
+# policy: git-commit, git-push
+prefix_rule(
+    pattern = ["git", ["commit", "push"]],
+    decision = "prompt",
+    justification = "Commits and pushes need explicit user approval.",
+    match = ["git commit -m wip", "git push origin main"],
+    not_match = ["git status", "git log"],
+)
+
+# policy: milestone-run
+prefix_rule(
+    pattern = [["milestone-run.sh", "@KIT@/bin/milestone-run.sh"]],
+    decision = "prompt",
+    justification = "A milestone run commits, so it needs explicit user approval.",
+    match = ["milestone-run.sh PLAN.md --check true"],
+)
+
+# policy: reset-hard, git-clean-force
+prefix_rule(
+    pattern = ["git", ["reset", "clean"]],
+    decision = "prompt",
+    justification = "Destructive git commands need approval. Prefer git stash.",
+    match = ["git reset --hard", "git clean -fd"],
+)
+
+# policy: gh-publish
+prefix_rule(
+    pattern = ["gh", ["pr", "release"], ["create", "merge"]],
+    decision = "prompt",
+    justification = "Publishing to GitHub needs explicit user approval.",
+    match = ["gh pr create --fill", "gh pr merge 12", "gh release create v1"],
+    not_match = ["gh pr view 12", "gh pr list"],
+)
+
+# policy: npm-publish
+prefix_rule(
+    pattern = [["npm", "pnpm", "yarn", "bun"], "publish"],
+    decision = "prompt",
+    justification = "Publishing packages needs explicit user approval.",
+    match = ["npm publish", "pnpm publish --access public"],
+)
+
+# policy: docker-push
+prefix_rule(
+    pattern = ["docker", "push"],
+    decision = "prompt",
+    justification = "Pushing images needs explicit user approval.",
+)
+
+# policy: terraform-apply
+prefix_rule(
+    pattern = ["terraform", ["apply", "destroy"]],
+    decision = "prompt",
+    justification = "Infrastructure changes need explicit user approval.",
+)
+
+# policy: kubectl-change
+prefix_rule(
+    pattern = ["kubectl", ["apply", "delete", "scale", "rollout"]],
+    decision = "prompt",
+    justification = "Cluster changes need explicit user approval.",
+)
+
+# policy: sudo
+prefix_rule(
+    pattern = ["sudo"],
+    decision = "prompt",
+    justification = "sudo needs explicit user approval.",
+)
+
+# policy: publish-package
+prefix_rule(
+    pattern = [["cargo", "uv", "poetry", "flit", "hatch"], "publish"],
+    decision = "prompt",
+    justification = "Publishing packages needs explicit user approval.",
+    match = ["cargo publish", "uv publish"],
+    not_match = ["cargo build"],
+)
+
+# policy: publish-package
+prefix_rule(
+    pattern = ["twine", "upload"],
+    decision = "prompt",
+    justification = "Publishing packages needs explicit user approval.",
+)
+
+# policy: publish-package
+prefix_rule(
+    pattern = ["gem", "push"],
+    decision = "prompt",
+    justification = "Publishing packages needs explicit user approval.",
+)
+
+# policy: gh-write
+prefix_rule(
+    pattern = ["gh", "issue", ["create", "comment", "close", "delete"]],
+    decision = "prompt",
+    justification = "Posting or changing things on GitHub speaks as the user, so it needs explicit approval.",
+    match = ["gh issue comment 3 -b hi"],
+    not_match = ["gh issue view 3", "gh issue list"],
+)
+
+# policy: gh-write
+prefix_rule(
+    pattern = ["gh", "pr", ["comment", "review", "close"]],
+    decision = "prompt",
+    justification = "Posting or changing things on GitHub speaks as the user, so it needs explicit approval.",
+    match = ["gh pr comment 12 -b hi"],
+)
+
+# policy: gh-write
+prefix_rule(
+    pattern = ["gh", "repo", ["create", "delete", "archive", "rename"]],
+    decision = "prompt",
+    justification = "Posting or changing things on GitHub speaks as the user, so it needs explicit approval.",
+    not_match = ["gh repo view"],
+)
+
+# policy: gh-write
+prefix_rule(
+    pattern = ["gh", "gist", "create"],
+    decision = "prompt",
+    justification = "Posting or changing things on GitHub speaks as the user, so it needs explicit approval.",
+)
+
+# policy: deploy
+prefix_rule(
+    pattern = [["vercel", "netlify", "flyctl", "fly", "wrangler", "firebase", "railway", "heroku"]],
+    decision = "prompt",
+    justification = "Deploy CLIs can publish, so they need explicit user approval.",
+    match = ["vercel deploy --prod", "wrangler deploy"],
+)
+
+# policy: send-mail
+prefix_rule(
+    pattern = [["mail", "mailx", "sendmail", "msmtp", "mutt"]],
+    decision = "prompt",
+    justification = "Sending mail needs explicit user approval.",
+)

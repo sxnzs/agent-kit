@@ -1,0 +1,32 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugins": ["./plugins/agent-kit-guard"],
+  "permission": {
+    "edit": {
+      "*": "allow",
+      "*.env": "ask",
+      "*.env.*": "ask"
+    },
+    "bash": {
+      "*": "allow",
+      "git commit*": "ask",
+      "git push*": "ask",
+      "git reset*": "ask",
+      "git clean*": "ask",
+      "gh pr create*": "ask",
+      "gh pr merge*": "ask",
+      "gh release create*": "ask",
+      "npm publish*": "ask",
+      "pnpm publish*": "ask",
+      "yarn publish*": "ask",
+      "bun publish*": "ask",
+      "docker push*": "ask",
+      "terraform apply*": "ask",
+      "terraform destroy*": "ask",
+      "kubectl apply*": "ask",
+      "kubectl delete*": "ask",
+      "sudo *": "ask"
+    },
+    "webfetch": "allow"
+  }
+}

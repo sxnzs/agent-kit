@@ -1,0 +1,25 @@
+name: verify
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shellcheck (macOS)
+        if: runner.os == 'macOS'
+        run: brew install shellcheck
+      - name: Verify
+        run: ./scripts/verify
+      - name: Install and uninstall into a throwaway HOME
+        run: |
+          export HOME="$(mktemp -d)"
+          ./install.sh --all
+          ./install.sh --uninstall

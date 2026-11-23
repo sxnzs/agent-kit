@@ -1,0 +1,5 @@
+interface:
+  display_name: Next
+  short_description: Read the current state of the work and recommend one concrete next step.
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,266 @@
+{
+  "_comment": "One policy for every host. Regexes must work in both Python and JavaScript. deny blocks, ask requires the user to approve. Every rule has a unique name and the guard prints it as (rule: <name>), so a blocked agent can find the rule here, and every reason says the way forward. Commands are checked after normalize() removes line continuations, commit messages and cat/tee heredoc bodies; a code mode script also loses the string values of data keys (content, oldText and the like), so a doc that quotes a blocked command can still be written. Codex and OpenCode also get native ask rules (see adapters). After editing, run guard/check.sh.",
+  "bash": {
+    "deny": [
+      {
+        "name": "rm-root-home",
+        "pattern": "\\brm(?=[^;&|\\n]*\\s(?:-[a-zA-Z]*[rR][a-zA-Z]*|--recursive)(?=\\s|$))[^;&|\\n]*\\s(?:--\\s+)?[\"']?(?:/|~|\\$HOME|\\$\\{HOME\\}|/Users/[^/\\s\"']+|/home/[^/\\s\"']+)/?\\*?[\"']?(?=\\s|$|[;&|)])",
+        "reason": "Recursive delete of root or home is blocked. Delete one named path, or ask the user."
+      },
+      {
+        "name": "find-root-delete",
+        "pattern": "\\bfind\\s+[\"']?(?:/|~|\\$HOME|\\$\\{HOME\\}|/Users/[^/\\s\"']+|/home/[^/\\s\"']+)/?[\"']?\\s[^;&|\\n]*(?:-delete\\b|-exec\\s+rm\\b)",
+        "reason": "Deleting with find from root or home is blocked. Target one directory, or ask the user."
+      },
+      {
+        "name": "force-push",
+        "pattern": "\\bgit(?:\\s+(?:-[Cc]\\s+\\S+|--[\\w-]+(?:=\\S+)?))*\\s+push\\b[^;&|\\n]*\\s(?:--force(?![\\w-])|-[a-zA-Z]*f[a-zA-Z]*(?=\\s|$)|\\+\\S|--mirror\\b)",
+        "reason": "Force push is blocked. Use --force-with-lease, push normally, or ask the user."
+      },
+      {
+        "name": "reset-hard",
+        "pattern": "\\bgit(?:\\s+(?:-[Cc]\\s+\\S+|--[\\w-]+(?:=\\S+)?))*\\s+reset\\b[^;&|\\n]*\\s--hard\\b",
+        "reason": "git reset --hard is blocked. Use git stash instead."
+      },
+      {
+        "name": "git-clean-force",
+        "pattern": "\\bgit(?:\\s+(?:-[Cc]\\s+\\S+|--[\\w-]+(?:=\\S+)?))*\\s+clean\\b(?=[^;&|\\n]*\\s(?:-[a-zA-Z]*f|--force\\b))(?![^;&|\\n]*\\s(?:-[a-zA-Z]*n[a-zA-Z]*|--dry-run)(?=\\s|$))",
+        "reason": "git clean -f is blocked. List files with git clean -n and ask the user."
+      },
+      {
+        "name": "mkfs",
+        "pattern": "\\bmkfs(\\.|\\s)",
+        "reason": "Formatting disks is blocked. Pick the filesystem path with the user."
+      },
+      {
+        "name": "diskutil-erase",
+        "pattern": "\\bdiskutil\\s+(?:erase\\w*|zeroDisk|secureErase|partitionDisk|reformat)\\b",
+        "reason": "Erasing disks is blocked. Pick the disk with the user."
+      },
+      {
+        "name": "dd-raw-device",
+        "pattern": "\\bdd\\s+.*\\bof=/dev/",
+        "reason": "Writing to raw devices is blocked. Pick the device with the user."
+      },
+      {
+        "name": "download-to-shell",
+        "pattern": "\\b(?:curl|wget)\\b[^;&\\n]*\\|\\s*(?:sudo\\s+)?(?:env\\s+)?(?:\\S*/)?(?:ba|z|da|k|fi)?sh\\b",
+        "reason": "Piping a download into a shell is blocked. Download, read, then run."
+      },
+      {
+        "name": "download-to-interpreter",
+        "pattern": "\\b(?:curl|wget)\\b[^;&\\n]*\\|\\s*(?:sudo\\s+)?(?:\\S*/)?(?:python3?|node|perl|ruby)(?:\\s+-)?\\s*(?:$|[;&|)])",
+        "reason": "Piping a download into an interpreter is blocked. Download, read, then run."
+      },
+      {
+        "name": "run-download",
+        "pattern": "(?:\\b(?:ba|z)?sh|\\bsource|\\beval)\\s+(?:-c\\s+)?[\"']?(?:<\\(|\\$\\()\\s*(?:curl|wget)\\b",
+        "reason": "Running a download directly is blocked. Download, read, then run."
+      },
+      {
+        "name": "ssh-write-redirect",
+        "pattern": "(?:>>?|\\btee\\s+(?:-a\\s+)?|\\bssh-keygen\\b[^;&|\\n]*\\s-f\\s*)\\s*[\"']?(?:~|\\$HOME|\\$\\{HOME\\}|/Users/[^/\\s\"']+|/home/[^/\\s\"']+)/\\.[sS][sS][hH]/",
+        "reason": "Writing inside ~/.ssh is blocked. Write the file elsewhere, then ask the user to move it."
+      },
+      {
+        "name": "ssh-write-move",
+        "pattern": "\\b(?:cp|mv|install|ln|rsync)\\b[^;&|\\n]*\\s[\"']?(?:~|\\$HOME|\\$\\{HOME\\}|/Users/[^/\\s\"']+|/home/[^/\\s\"']+)/\\.[sS][sS][hH](?:/\\S*)?[\"']?\\s*(?:$|[;&|])",
+        "reason": "Writing inside ~/.ssh is blocked. Write the file elsewhere, then ask the user to move it."
+      },
+      {
+        "name": "chmod-777",
+        "pattern": "\\bchmod\\s+-R\\s+777\\b",
+        "reason": "chmod -R 777 is blocked. Use a narrower mode, or ask the user."
+      },
+      {
+        "name": "git-checkout-force",
+        "pattern": "\\bgit(?:\\s+(?:-[Cc]\\s+\\S+|--[\\w-]+(?:=\\S+)?))*\\s+(?:checkout|switch)\\b[^;&|\\n]*\\s(?:--force|--discard-changes|-[a-zA-Z]*f[a-zA-Z]*)(?=\\s|$|[;&|)])",
+        "reason": "Forced checkout or switch discards uncommitted changes. Stash or commit first, or ask the user."
+      },
+      {
+        "name": "git-discard-all",
+        "pattern": "\\bgit(?:\\s+(?:-[Cc]\\s+\\S+|--[\\w-]+(?:=\\S+)?))*\\s+(?:checkout|restore)\\b(?![^;&|\\n]*\\s(?:--staged|-[a-zA-Z]*S[a-zA-Z]*)(?=\\s|$|[;&|)])(?![^;&|\\n]*\\s(?:--worktree|-[a-zA-Z]*W[a-zA-Z]*)(?=\\s|$|[;&|)])))[^;&|\\n]*\\s(?:--\\s+)?[\"']?\\./?[\"']?(?=\\s|$|[;&|)])",
+        "reason": "Wholesale discard of local changes is blocked. Target specific paths (e.g. git checkout -- src/file), or ask the user."
+      },
+      {
+        "name": "git-stash-drop",
+        "pattern": "\\bgit(?:\\s+(?:-[Cc]\\s+\\S+|--[\\w-]+(?:=\\S+)?))*\\s+stash\\s+(?:drop|clear)\\b",
+        "reason": "git stash drop and clear destroy stashed work. List stashes with git stash list, or ask the user."
+      },
+      {
+        "name": "git-worktree-remove-force",
+        "pattern": "\\bgit(?:\\s+(?:-[Cc]\\s+\\S+|--[\\w-]+(?:=\\S+)?))*\\s+worktree\\s+remove\\b[^;&|\\n]*\\s(?:-[a-zA-Z]*f[a-zA-Z]*|--force)(?=\\s|$|[;&|)])",
+        "reason": "Forced worktree removal discards uncommitted work in that tree. Use git worktree remove without -f, or ask the user."
+      },
+      {
+        "name": "git-reflog-expire",
+        "pattern": "\\bgit(?:\\s+(?:-[Cc]\\s+\\S+|--[\\w-]+(?:=\\S+)?))*\\s+reflog\\s+expire\\b",
+        "reason": "Expiring the reflog removes recovery paths for lost commits. Ask the user before expiring reflogs."
+      },
+      {
+        "name": "git-branch-force-delete",
+        "pattern": "\\bgit(?:\\s+(?:-[Cc]\\s+\\S+|--[\\w-]+(?:=\\S+)?))*\\s+branch\\b(?:[^;&|\\n]*\\s-[a-zA-Z]*D[a-zA-Z]*(?=\\s|$|[;&|)])|(?=[^;&|\\n]*\\s(?:--delete|-[a-zA-Z]*d[a-zA-Z]*)(?=\\s|$|[;&|)]))[^;&|\\n]*\\s(?:--force|-[a-zA-Z]*f[a-zA-Z]*)(?=\\s|$|[;&|)]))",
+        "reason": "Force deleting a branch discards unmerged commits. Use git branch -d instead, or ask the user."
+      },
+      {
+        "name": "git-update-ref-delete",
+        "pattern": "\\bgit(?:\\s+(?:-[Cc]\\s+\\S+|--[\\w-]+(?:=\\S+)?))*\\s+update-ref\\b[^;&|\\n]*\\s-d(?=\\s|$|[;&|)])",
+        "reason": "git update-ref -d deletes a ref directly. Use git branch -d for branches, or ask the user."
+      },
+      {
+        "name": "git-filter-branch",
+        "pattern": "\\bgit(?:\\s+(?:-[Cc]\\s+\\S+|--[\\w-]+(?:=\\S+)?))*\\s+filter-branch\\b",
+        "reason": "git filter-branch rewrites history across every branch. Use a targeted branch operation, or ask the user."
+      },
+      {
+        "name": "git-no-verify",
+        "pattern": "\\bgit(?:\\s+(?:-[Cc]\\s+\\S+|--[\\w-]+(?:=\\S+)?))*\\s+(?!push\\b[^;&|\\n]*\\s--dry-run(?=\\s|$|[;&|)]))[^;&|\\n]*\\s--no-verify(?=\\s|$|[;&|)])",
+        "reason": "Bypassing git hooks with --no-verify is blocked. Fix the hook failure, or ask the user."
+      },
+      {
+        "name": "git-hooks-bypass",
+        "pattern": "\\bgit\\b[^;&|\\n]*\\s-c\\s*[\"']?core\\.[Hh]ooks[Pp]ath\\b|\\bLIMINAL_SKIP_HOOKS=",
+        "reason": "Bypassing git hooks via core.hooksPath or LIMINAL_SKIP_HOOKS is blocked. Fix the hook failure, or ask the user."
+      },
+      {
+        "name": "rm-harness-or-code",
+        "pattern": "\\brm(?=[^;&|\\n]*\\s(?:-[a-zA-Z]*[rR][a-zA-Z]*|--recursive)(?=\\s|$))[^;&|\\n]*\\s(?:--\\s+)?[\"']?(?:(?:~|\\$HOME|\\$\\{HOME\\}|/Users/[^/\\s\"']+|/home/[^/\\s\"']+)/(?:\\.(?:claude|config)(?:/[^\\s\"';&|)]*)?|[Cc]ode/?\\*?)|\\.{1,2}/?\\*?)[\"']?(?=\\s|$|[;&|)])",
+        "reason": "Recursive delete of harness config, code workspace, or cwd/parent is blocked. Target one explicit subdirectory, or ask the user."
+      }
+    ],
+    "ask": [
+      {
+        "name": "git-commit",
+        "pattern": "\\bgit(?:\\s+(?:-[Cc]\\s+\\S+|--[\\w-]+(?:=\\S+)?))*\\s+commit\\b",
+        "reason": "Commits need explicit user approval."
+      },
+      {
+        "name": "milestone-run",
+        "pattern": "(?:^|[;&|(\\n]\\s*)(?:(?:ba|z)?sh\\s+)?(?:\\S*/)?milestone-run(?:\\.sh)?(?=\\s|$)",
+        "reason": "A milestone run commits, so it needs explicit user approval."
+      },
+      {
+        "name": "git-push",
+        "pattern": "\\bgit(?:\\s+(?:-[Cc]\\s+\\S+|--[\\w-]+(?:=\\S+)?))*\\s+push\\b(?![^;&|\\n]*\\s(?:--dry-run|-n)(?=\\s|$))",
+        "reason": "Pushes need explicit user approval."
+      },
+      {
+        "name": "gh-publish",
+        "pattern": "\\bgh\\s+(pr\\s+(create|merge)|release\\s+create)\\b",
+        "reason": "Publishing to GitHub needs explicit user approval."
+      },
+      {
+        "name": "npm-publish",
+        "pattern": "\\b(npm|pnpm|yarn|bun)\\s+publish\\b",
+        "reason": "Publishing packages needs explicit user approval."
+      },
+      {
+        "name": "docker-push",
+        "pattern": "\\bdocker\\s+push\\b",
+        "reason": "Pushing images needs explicit user approval."
+      },
+      {
+        "name": "terraform-apply",
+        "pattern": "\\bterraform\\s+(apply|destroy)\\b",
+        "reason": "Infrastructure changes need explicit user approval."
+      },
+      {
+        "name": "kubectl-change",
+        "pattern": "\\bkubectl\\s+(apply|delete|scale|rollout)\\b",
+        "reason": "Cluster changes need explicit user approval."
+      },
+      {
+        "name": "sudo",
+        "pattern": "(?:^|[;&|(\\n]\\s*|\\b(?:then|do|else)\\s+)sudo\\b",
+        "reason": "sudo needs explicit user approval."
+      },
+      {
+        "name": "publish-package",
+        "pattern": "\\b(?:cargo|uv|poetry|flit|hatch)\\s+publish\\b|\\btwine\\s+upload\\b|\\bgem\\s+push\\b",
+        "reason": "Publishing packages needs explicit user approval."
+      },
+      {
+        "name": "gh-write",
+        "pattern": "\\bgh\\s+(?:issue\\s+(?:create|comment|close|delete)|pr\\s+(?:comment|review|close)|repo\\s+(?:create|delete|archive|rename)|gist\\s+create)\\b",
+        "reason": "Posting or changing things on GitHub speaks as the user, so it needs explicit approval."
+      },
+      {
+        "name": "deploy",
+        "pattern": "(?:^|[;&|(\\n]\\s*)(?:npx\\s+|bunx\\s+)?(?:vercel|netlify|flyctl|fly|wrangler|firebase|railway|heroku)\\s+(?:[\\w-]+\\s+)?deploy\\b",
+        "reason": "Deploys need explicit user approval."
+      },
+      {
+        "name": "send-mail",
+        "pattern": "(?:^|[;&|(\\n]\\s*)(?:mail|mailx|sendmail|msmtp|mutt)\\s",
+        "reason": "Sending mail needs explicit user approval."
+      },
+      {
+        "name": "guard-shell-write",
+        "pattern": "(?:(?:^|[;&|(\\n])\\s*(?:cp|mv|install|rsync|ln|dd|truncate)\\b[^;&|\\n]*agent-kit/guard/\\S*\\s*(?=$|[;&|])|(?:^|[;&|\\n])\\s*(?:sed|perl)\\s+(?:-[a-zA-Z]*i|--in-place)\\b[^;&|\\n]*agent-kit/guard/\\S*\\s*(?=$|[;&|])|(?:>>?|\\btee\\s+(?:-a\\s+)?)\\s*[\"']?(?:\\S*/)?\\S*agent-kit/guard/\\S*)",
+        "reason": "Changing the guard from the shell needs explicit user approval."
+      }
+    ]
+  },
+  "tools": {
+    "_comment": "Matched against the lowercased tool name (MCP tools included), so connected apps get the same deny and ask gate as the shell.",
+    "deny": [],
+    "ask": [
+      {
+        "name": "mcp-delete",
+        "pattern": "^(?!.*(?:browse|chrome|browser).*(?:session|tab)).*(?:^|[_.-])(?:delete|remove|trash|purge|destroy)(?=[_.-]|$)",
+        "reason": "Deleting data in a connected app needs explicit user approval."
+      },
+      {
+        "name": "mcp-send",
+        "pattern": "^(?!.*(?:^|[_.-])(?:get|list|read|search|fetch|query|view|find)[_.-]).*(?:(?:^|[_.-])(?:send|publish|post|cancel|invite|share|reply)(?=[_.-]|$)|(?:^|[_.-])create[_.-]comment)",
+        "reason": "Sending, publishing or cancelling in a connected app speaks as the user, so it needs explicit approval."
+      },
+      {
+        "name": "mcp-money",
+        "pattern": "^(?!.*(?:^|[_.-])(?:get|list|read|search|fetch|query|view|find)[_.-]).*(?:^|[_.-])(?:purchase|buy|pay|checkout|order|subscribe|unsubscribe|transfer|trade|refund)(?=[_.-]|$)",
+        "reason": "Purchases and money movement need explicit user approval."
+      },
+      {
+        "name": "mcp-account",
+        "pattern": "(?:^|[_.-])(?:create|update|change|delete|reset)[_.-](?:account|password|billing|subscription|plan|member|permission|role)s?(?=[_.-]|$)",
+        "reason": "Account changes need explicit user approval."
+      }
+    ]
+  },
+  "paths": {
+    "deny_write": [
+      {
+        "name": "ssh-path",
+        "pattern": "(^|/)\\.[sS][sS][hH](/|$)",
+        "reason": "Writing inside ~/.ssh is blocked. Ask the user to change that file."
+      },
+      {
+        "name": "ssh-key",
+        "pattern": "(^|/)(id_rsa|id_ed25519|id_ecdsa)(\\.pub)?$",
+        "reason": "Writing SSH keys is blocked. Ask the user, or run ssh-keygen with the user present."
+      },
+      {
+        "name": "key-cert",
+        "pattern": "\\.(pem|p12|pfx)$",
+        "reason": "Writing key or certificate files is blocked. Generate them with the tool that owns them."
+      },
+      {
+        "name": "key-file",
+        "pattern": "(^|/)[^/]*(priv|private|server|client|tls|ssl|signing)[^/]*\\.key$",
+        "reason": "Writing key files is blocked. Generate them with the tool that owns them."
+      }
+    ],
+    "ask_write": [
+      {
+        "name": "env-file",
+        "pattern": "(^|/)\\.env(?!\\.(example|sample|template)$)(\\.[A-Za-z0-9_]+)?$",
+        "reason": "Editing .env files needs explicit user approval."
+      },
+      {
+        "name": "guard-edit",
+        "pattern": "(^|/)agent-kit/guard/",
+        "reason": "Editing the guard itself needs explicit user approval."
+      }
+    ]
+  }
+}

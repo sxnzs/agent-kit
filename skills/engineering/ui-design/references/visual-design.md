@@ -1,0 +1,70 @@
+# Visual Design
+
+Read when choosing visual direction, typography, color, or theme tokens.
+
+Find a visual direction grounded in the product, audience and existing design
+language. Make it visible at the intended size, then express it as values a
+builder can apply.
+
+## What done looks like
+
+A justified direction, inspected renderings, concrete values mapped to the
+project's tokens, relevant state behavior, and the alternatives and trade-offs
+that informed the choice. A presentation awaiting selection remains pending.
+
+## How the work goes
+
+- Inspect existing tokens, components, brand references and the surrounding
+  surface. Reuse the user's chosen direction and project language. If the
+  audience or desired outcome is unsettled, run the grill workflow in **design**
+  (Call the Skill tool with "grill".) before choosing an identity for them.
+- Compare distinct directions on a named axis when the look is open.
+  Typography, density, contrast or material may change the character; palette
+  swaps alone may not. Size the experiment to the question, and do not force
+  several variants for a settled or tiny detail.
+- Use realistic content, deliberate hierarchy and equally careful execution.
+  Inspect options full-size in their actual surroundings; evaluate relevant
+  narrow widths, long content and control states. Avoid letting one option lose
+  simply because its implementation is unfinished. The switchable in-place setup
+  in [variant-prototypes.md](variant-prototypes.md) also suits comparing directions on the real page.
+- An undirected first rendering often relies on familiar patterns, such as
+  cream backgrounds, italic accent words in headlines, numbered "01/02/03"
+  section labels, monospace labels or pill buttons. "Avoid a generic look" swaps
+  one default for another. Name the patterns that conflict with the brief, keep
+  requested or established styles, and extend the list after each rendering.
+- Render and inspect what you present. Crop and zoom to judge small text,
+  alignment and fine detail rather than a downscaled screenshot. Check
+  legibility, contrast, hierarchy, coherence and relevant interaction states. Mark renderings you cannot inspect
+  as unverified; give the human a usable artifact rather than an imagined result.
+- Present viable directions and honest trade-offs when taste still needs a
+  choice. Respect a reserved human selection; keep its artifacts available.
+- Record actual type choices and scale, color roles and values, spacing, radius,
+  elevation and relevant motion mapped to the existing design system. Include
+  stable visual references and acceptance checks in the handoff. Save it in
+  existing docs when requested or part of the established planning workflow;
+  update production tokens when implementation is requested. Read
+  [motion-design.md](motion-design.md) when timing, gestures or interruption need their own investigation.
+
+## Boundaries
+
+Explore unsettled directions on an isolated surface. Preserve user assets and
+reconstructable evidence; clean up only disposable work after recording the
+choice. Apply a settled direction to real code when the user requested that
+implementation, then verify it. A direction-only request ends with the handoff
+and one next step.
+
+Share context across siblings instead of restarting.
+Use optional helpers only when they improve the current decision, and extend
+the existing design system rather than creating a parallel one.
+
+## Handoffs
+
+**run** continues into that skill or reference with this context unless the request stops
+short of it, then it is only suggested. **suggest** names it in one closing line
+once the deliverable is final and never continues unasked. A missing skill never
+blocks; do the work inline.
+
+- The outcome is unsettled -> Call the Skill tool with "grill".
+- Flow or interaction behavior is the question -> follow [SKILL.md](../SKILL.md)
+- Timing, gestures or interruption need investigation -> read [motion-design.md](motion-design.md)
+- The direction is settled and ready to build -> tell the user to run the spec-build skill

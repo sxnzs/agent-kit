@@ -1,0 +1,5 @@
+interface:
+  display_name: Fold Subagent
+  short_description: Fold an unnecessary subagent, router, or specialist into skills and tools in the main loop.
+policy:
+  allow_implicit_invocation: false

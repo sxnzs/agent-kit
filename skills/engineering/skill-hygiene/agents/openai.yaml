@@ -1,0 +1,3 @@
+interface:
+  display_name: Skill Hygiene
+  short_description: Create, audit, deduplicate, or prune skills, tool descriptions, and system prompts.

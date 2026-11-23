@@ -1,0 +1,5 @@
+interface:
+  display_name: Prewalk
+  short_description: Land the first real slice and hand off the live trajectory to a fast worker.
+policy:
+  allow_implicit_invocation: false

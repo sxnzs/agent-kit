@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# Unified Layer 2 verification gate for the kit.
+set -uo pipefail
+export PYTHONDONTWRITEBYTECODE=1
+
+KIT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$KIT" || exit 1
+
+FAILURES=0
+RESULTS=()
+
+run_stage() {
+  local name="$1"
+  shift
+  echo
+  echo "== $name"
+  if "$@"; then
+    RESULTS+=("PASS  $name")
+  else
+    RESULTS+=("FAIL  $name")
+    FAILURES=$((FAILURES + 1))
+  fi
+}
+
+check_shell_scripts() {
+  local count=0
+  local failed=0
+  local file shebang
+  if ! command -v shellcheck >/dev/null 2>&1; then
+    echo "ERROR: shellcheck not found (brew install shellcheck, or apt-get install shellcheck)" >&2
+    return 1
+  fi
+  while IFS= read -r -d '' file; do
+    IFS= read -r shebang < "$file" || continue
+    case "$shebang" in
+      '#!/usr/bin/env bash'*|'#!/bin/bash'*)
+        count=$((count + 1))
+        bash -n "$file" || failed=1
+        shellcheck -S warning "$file" || failed=1
+        ;;
+      '#!/usr/bin/env sh'*|'#!/bin/sh'*)
+        count=$((count + 1))
+        sh -n "$file" || failed=1
+        shellcheck -S warning "$file" || failed=1
+        ;;
+    esac
+  done < <(find . -path './.git' -prune -o -type f -print0)
+  if [ "$failed" -eq 0 ]; then
+    echo "ok: $count shell script(s) syntax and shellcheck clean"
+  fi
+  return "$failed"
+}
+
+run_stage "guard checks" ./guard/check.sh
+
+INSTALLED_KIT="$(readlink -f "$HOME/.agents/agent-kit" 2>/dev/null || true)"
+if [ -d "$HOME/.agents/skills" ] && [ "$INSTALLED_KIT" = "$KIT" ]; then
+  run_stage "skill validator" python3 scripts/check_skills.py --check-links "$HOME/.agents/skills"
+else
+  run_stage "skill validator" python3 scripts/check_skills.py
+fi
+
+run_stage "skill validator unit tests" python3 scripts/test_check_skills.py
+run_stage "prose linter unit tests" python3 skills/productivity/writing/scripts/test_check_prose.py
+run_stage "prose linter (SKILL.md)" python3 skills/productivity/writing/scripts/check_prose.py --strict skills/*/*/SKILL.md
+run_stage "shell syntax" check_shell_scripts
+
+echo
+echo "== summary"
+for line in "${RESULTS[@]}"; do
+  echo "  $line"
+done
+
+if [ "$FAILURES" -gt 0 ]; then
+  echo "verify: $FAILURES stage(s) failed" >&2
+  exit 1
+fi
+echo "verify: all checks passed"

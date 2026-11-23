@@ -1,0 +1,5 @@
+interface:
+  display_name: Ship
+  short_description: Commit and push finished work cleanly across every touched repository.
+policy:
+  allow_implicit_invocation: false

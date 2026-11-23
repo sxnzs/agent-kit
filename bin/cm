@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# cm: start one agent session with code mode on. Every default stays off.
+#
+#   cm claude   [args...]   claude --settings overlays/claude-codemode.json
+#   cm codex    [args...]   codex -c features.code_mode=true
+#   cm pi       [args...]   pi --tools +codemode
+#   cm opencode [args...]   opencode --standalone with a generated config overlay
+#
+# Exports CODEMODE_SESSION=1 to the session. See CODEMODE.md.
+set -euo pipefail
+
+KIT="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+
+usage() { sed -n '2,9p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//' >&2; exit 2; }
+[ $# -ge 1 ] || usage
+tool="$1"; shift
+
+export CODEMODE_SESSION=1
+
+case "$tool" in
+  claude)
+    # An inherited off value beats --settings in Claude Code, so override it.
+    export CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1
+    exec claude --settings "$KIT/overlays/claude-codemode.json" "$@"
+    ;;
+  codex)
+    export CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1
+    exec codex -c features.code_mode=true \
+      -c 'shell_environment_policy.set.CLAUDE_CODE_EXPERIMENTAL_CODE_MODE="1"' \
+      -c 'shell_environment_policy.set.CODEMODE_SESSION="1"' \
+      "$@"
+    ;;
+  pi)
+    exec pi --tools +codemode "$@"
+    ;;
+  opencode)
+    oc_root="$HOME/.config/opencode"
+    # The launcher replaces OPENCODE_CONFIG when this overlay exists.
+    xdg_env="$oc_root/bin/agent-xdg.env"
+    xdg_dir="$(bash -c '[ -r "$1" ] && . "$1"; printf %s "${OPENCODE_AGENT_XDG:-}"' _ "$xdg_env")"
+    if [ -n "$xdg_dir" ] && [ -r "$xdg_dir/azure.json" ]; then
+      echo "cm: $xdg_dir/azure.json would replace the code mode overlay" >&2
+      exit 1
+    fi
+    # Partial server entries are dropped by opencode, so the overlay carries
+    # every live server with codemode on. Regenerated on each launch.
+    overlay="${XDG_CACHE_HOME:-$HOME/.cache}/agent-kit/opencode-codemode.json"
+    mkdir -p "$(dirname "$overlay")"
+    umask 077
+    jq '{mcp: {servers: ((.mcp.servers // {}) | map_values(.codemode = true))}}' \
+      "$oc_root/opencode.json" > "$overlay"
+    # The background service ignores a per launch OPENCODE_CONFIG.
+    OPENCODE_CONFIG="$overlay" exec opencode "$@" --standalone
+    ;;
+  -h|--help) usage ;;
+  *) echo "cm: unknown tool '$tool'" >&2; usage ;;
+esac

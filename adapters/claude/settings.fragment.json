@@ -1,0 +1,35 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Write|Edit|MultiEdit|NotebookEdit|mcp__.*|REPL",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.agents/agent-kit/guard/guard.py\" --host claude",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.agents/agent-kit/bin/git-stop-warn.sh\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "deny": [
+      "Read(~/.ssh/**)",
+      "Read(**/*.pem)",
+      "Read(**/id_rsa)",
+      "Read(**/id_ed25519)"
+    ]
+  }
+}

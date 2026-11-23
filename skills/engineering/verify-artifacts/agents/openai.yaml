@@ -1,0 +1,3 @@
+interface:
+  display_name: Verify Artifacts
+  short_description: Produce Layer 3 runtime, browser, CLI, and visual verification artifacts, or done-check claimed work.

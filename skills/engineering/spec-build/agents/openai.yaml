@@ -1,0 +1,5 @@
+interface:
+  display_name: Spec & Build
+  short_description: Turn settled decisions into local specs, wayfinding maps, and vertical TDD slices.
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,33 @@
+{
+  "name": "agent-kit",
+  "displayName": "Agent Kit",
+  "version": "1.0.0",
+  "description": "One agent setup for Claude Code, Codex, OpenCode, Pi, Gemini/Antigravity, and Cursor: skills, guards, and adapters from a single source of truth.",
+  "author": {
+    "name": "Santiago Sainz"
+  },
+  "homepage": "https://github.com/sxnzs/agent-kit",
+  "repository": "https://github.com/sxnzs/agent-kit",
+  "license": "MIT",
+  "category": "developer-tools",
+  "keywords": [
+    "agent-kit",
+    "skills",
+    "workflow",
+    "engineering",
+    "productivity"
+  ],
+  "tags": [
+    "workflow",
+    "skills",
+    "review",
+    "debugging"
+  ],
+  "skills": [
+    "./skills/engineering",
+    "./skills/productivity"
+  ],
+  "agents": [
+    "./adapters/claude/agents/verifier.md"
+  ]
+}

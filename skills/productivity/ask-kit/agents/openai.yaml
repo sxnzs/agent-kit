@@ -1,0 +1,5 @@
+interface:
+  display_name: Ask Kit
+  short_description: Map every user-invoked skill by workflow stage so you only need to remember one name.
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,24 @@
+# Agent Kit baseline for Codex. Copied to ~/.codex/config.toml only if you have none.
+# If you already have one, merge these keys by hand (the installer will not touch it).
+
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "cached"
+project_doc_max_bytes = 32768
+
+[features]
+code_mode = false
+
+[sandbox_workspace_write]
+network_access = false
+
+# One loop by default. Subagents only for parallel disposable work or black box verification.
+[agents]
+max_threads = 4
+max_depth = 1
+
+# Tools: add MCP servers grouped by user intent, and filter to the tools you need.
+# [mcp_servers.github]
+# command = "npx"
+# args = ["-y", "@github/mcp-server"]
+# enabled_tools = ["search_issues", "get_pull_request"]

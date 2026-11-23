@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^(Bash|apply_patch|Edit|Write|exec)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.agents/agent-kit/guard/guard.py\" --host codex",
+            "statusMessage": "agent-kit guard"
+          }
+        ]
+      }
+    ]
+  }
+}

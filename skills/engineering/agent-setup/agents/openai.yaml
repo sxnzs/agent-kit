@@ -1,0 +1,5 @@
+interface:
+  display_name: Agent Setup
+  short_description: Onboard a repository for agents and fix recurring session failures without a full rewrite.
+policy:
+  allow_implicit_invocation: false

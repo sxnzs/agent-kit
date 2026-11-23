@@ -1,0 +1,6 @@
+{
+  "name": "agent-kit-guard",
+  "private": true,
+  "type": "module",
+  "exports": "./index.ts"
+}

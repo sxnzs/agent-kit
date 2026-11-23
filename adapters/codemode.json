@@ -1,0 +1,22 @@
+{
+  "_doc": "Code mode is off by default in every harness and turned on for one session with bin/cm. A config check can read this file and fail when a live config turns a default on. See CODEMODE.md.",
+  "claude": {
+    "settings_env_key": "CLAUDE_CODE_EXPERIMENTAL_CODE_MODE",
+    "default": "absent",
+    "session_overlay": "overlays/claude-codemode.json"
+  },
+  "codex": {
+    "feature": "code_mode",
+    "default": false,
+    "session_flags": ["-c", "features.code_mode=true"]
+  },
+  "pi": {
+    "default_tools_must_not_include": ["+codemode", "codemode"],
+    "mcp_exposure": "deferred",
+    "session_flags": ["--tools", "+codemode"]
+  },
+  "opencode": {
+    "mcp_server_codemode": false,
+    "session_flags": ["--standalone"]
+  }
+}
