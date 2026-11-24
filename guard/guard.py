@@ -13,6 +13,7 @@ error, so a broken guard is visible but never bricks the agent. Codex has no
 hook ask, so there it allows and prints the error to stderr.
 Policy lives next to this file in policy.json. core.mjs mirrors this file.
 """
+import importlib.util
 import json
 import os
 import re
@@ -110,12 +111,12 @@ def patch_paths(tool_input):
     return [clean_path(p) for p in found]
 
 
-def evaluate(policy, tool_name, tool_input):
+def evaluate(policy, tool_name, tool_input, *, shell_command=None):
     """Return (decision, reason). decision is 'deny', 'ask' or None."""
     name = (tool_name or "").lower()
     cmd = None
     if name in SHELL_TOOLS or "command" in tool_input or "cmd" in tool_input:
-        cmd = normalize(command_of(tool_input))
+        cmd = normalize(command_of(tool_input)) if shell_command is None else shell_command
     code = [normalize_code(str(tool_input[k])) for k in CODE_KEYS if isinstance(tool_input.get(k), str)]
     paths = patch_paths(tool_input)
     if any(k in name for k in WRITE_HINTS):
@@ -135,24 +136,70 @@ def evaluate(policy, tool_name, tool_input):
     return None, None
 
 
-def reply(decision, reason):
-    print(json.dumps({
-        "hookSpecificOutput": {
-            "hookEventName": "PreToolUse",
-            "permissionDecision": decision,
-            "permissionDecisionReason": f"[agent-kit guard] {reason}",
-        }
-    }))
+def reply(decision=None, reason=None, context=None):
+    output = {"hookEventName": "PreToolUse"}
+    if decision:
+        output.update(permissionDecision=decision, permissionDecisionReason=f"[agent-kit guard] {reason}")
+    if context:
+        output["additionalContext"] = context
+    print(json.dumps({"hookSpecificOutput": output}))
 
 
-def run_hook(host):
+def local_hook(directory, filename):
+    path = os.path.join(directory, filename)
+    spec = importlib.util.spec_from_file_location(filename, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def evaluate_local(policy, tool, tool_input, directory):
+    """Add host-local checks without giving up shared enforcement on local errors."""
+    try:
+        if not directory:
+            raise ValueError("--local-hooks requires a directory")
+        command = command_of(tool_input) if tool == "Bash" else None
+        checks = local_hook(directory, "bash_checks.py") if command is not None else None
+        shell_text = checks.shell_text(command) if checks else None
+        decision, reason = evaluate(
+            policy, tool, tool_input,
+            shell_command=normalize(checks.scrub_messages(shell_text)) if checks else None,
+        )
+        if decision == "deny":
+            return decision, reason, None
+        if os.path.isfile(os.path.join(directory, "work-fence.py")):
+            fence = local_hook(directory, "work-fence.py")
+            if fence.blocked(tool, tool_input):
+                return "deny", fence.REASON, None
+        context = None
+        if checks:
+            extra = checks.extra_checks(command, shell_text)
+            if extra:
+                return "deny", extra, None
+            if checks.SLEEP.search(command):
+                context = ("Background commands (run_in_background) notify you when they exit. "
+                           "Wait for the notification instead of polling with sleep.")
+        return decision, reason, context
+    except (OSError, SyntaxError, ImportError, AttributeError, TypeError, ValueError, RuntimeError) as exc:
+        print(f"agent-kit local hook error: {exc}", file=sys.stderr)
+        decision, reason = evaluate(policy, tool, tool_input)
+        return decision or "ask", reason or f"Local checks failed: {exc}", None
+
+
+def run_hook(host, local_hooks=None):
     try:
         event = json.load(sys.stdin)
         tool_input = event.get("tool_input") or {}
         if not isinstance(tool_input, dict):
             tool_input = {"command": tool_input}
-        decision, reason = evaluate(load_policy(), event.get("tool_name"), tool_input)
-    except (json.JSONDecodeError, OSError, KeyError, TypeError, ValueError, re.error) as exc:
+        tool = event.get("tool_name", "")
+        policy = load_policy()
+        if local_hooks is None:
+            decision, reason = evaluate(policy, tool, tool_input)
+            context = None
+        else:
+            decision, reason, context = evaluate_local(policy, tool, tool_input, local_hooks)
+    except (OSError, AttributeError, KeyError, TypeError, ValueError, re.error) as exc:
         print(f"agent-kit guard error: {exc}", file=sys.stderr)
         if host == "claude":
             reply("ask", f"Guard error, so this call was not checked: {exc}")
@@ -160,7 +207,9 @@ def run_hook(host):
     if decision == "deny":
         reply("deny", reason)
     elif decision == "ask" and host == "claude":
-        reply("ask", reason)
+        reply("ask", reason, context)
+    elif context:
+        reply(context=context)
     return 0
 
 
@@ -406,4 +455,8 @@ if __name__ == "__main__":
         print(json.dumps(CASES))
         sys.exit(0)
     host = "codex" if "codex" in args else "claude"
-    sys.exit(run_hook(host))
+    local_hooks = None
+    if "--local-hooks" in args:
+        values = args[args.index("--local-hooks") + 1:]
+        local_hooks = values[0] if values and not values[0].startswith("--") else ""
+    sys.exit(run_hook(host, local_hooks))
