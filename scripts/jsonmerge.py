@@ -11,6 +11,7 @@ unmerge: removes exactly what merge added (list items equal to fragment items,
 Keys starting with "$" or "_" in the fragment are ignored.
 A backup TARGET.bak.agent-kit is written before the first change.
 """
+import copy
 import json
 import os
 import shutil
@@ -22,7 +23,7 @@ def merge(dst, frag):
         if k.startswith(("$", "_")):
             continue
         if k not in dst:
-            dst[k] = v
+            dst[k] = copy.deepcopy(v)
         elif isinstance(dst[k], dict) and isinstance(v, dict):
             merge(dst[k], v)
         elif isinstance(dst[k], list) and isinstance(v, list):

@@ -21,8 +21,8 @@ import hashlib
 import json
 import math
 import os
-import random
 import re
+import secrets
 import shutil
 import subprocess
 import sys
@@ -257,7 +257,7 @@ def _backoff_seconds(header: str | None, attempt: int) -> float:
     """Honor Retry-After, else jittered exponential backoff, capped."""
     parsed = _retry_after_seconds(header)
     delay = parsed if parsed is not None else 0.25 * 2 ** (attempt - 1)
-    delay += random.uniform(0.0, 0.1)
+    delay += secrets.SystemRandom().uniform(0.0, 0.1)
     return min(delay, MAX_DELAY_S)
 
 
@@ -464,8 +464,11 @@ def judge_opencode(
             }
         ],
     }
+    opencode_bin = shutil.which("opencode")
+    if not opencode_bin:
+        raise RuntimeError("opencode binary not found on PATH")
     proc = subprocess.run(
-        ["opencode", "api", "post", OPENCODE_DECISIONS, "--data", json.dumps(payload)],
+        [opencode_bin, "api", "post", OPENCODE_DECISIONS, "--data", json.dumps(payload)],
         capture_output=True,
         text=True,
         timeout=90,

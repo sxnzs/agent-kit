@@ -17,8 +17,8 @@ SECTIONS = [("bash", "deny"), ("bash", "ask"), ("tools", "deny"), ("tools", "ask
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 # A blocked agent needs the next step, not just a refusal.
 REMEDY_RE = re.compile(r"(?i)\b(user|instead|download, read|list |target |use |pick |delete one|write the file|generate|narrower|ask)\b")
-TAG_RE = re.compile(r"^#\s*policy:\s*(.+)$", re.M)
-HOOK_ONLY_RE = re.compile(r"^#\s*hook-only:\s*(.+)$", re.M)
+TAG_RE = re.compile(r"^#\s*policy:\s*(.+)$", re.MULTILINE)
+HOOK_ONLY_RE = re.compile(r"^#\s*hook-only:\s*(.+)$", re.MULTILINE)
 
 
 def names_in(text):
@@ -26,7 +26,8 @@ def names_in(text):
 
 
 def main():
-    policy = json.load(open(POLICY, encoding="utf-8"))
+    with open(POLICY, encoding="utf-8") as f:
+        policy = json.load(f)
     problems = []
     owner = {}
     count = 0
@@ -65,7 +66,8 @@ def main():
     wanted = {r["name"] for r in policy.get("bash", {}).get("ask") or [] if r.get("name")}
     have_rules = os.path.exists(RULES)
     if have_rules:
-        text = open(RULES, encoding="utf-8").read()
+        with open(RULES, encoding="utf-8") as f:
+            text = f.read()
         for group in TAG_RE.findall(text):
             tagged.update(names_in(group))
         for group in HOOK_ONLY_RE.findall(text):

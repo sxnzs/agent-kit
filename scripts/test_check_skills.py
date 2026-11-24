@@ -10,9 +10,9 @@ import unittest
 from contextlib import redirect_stderr
 from pathlib import Path
 
+from check_skills import main, validate_skills
+
 sys.dont_write_bytecode = True
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from check_skills import main, validate_skills  # noqa: E402
 
 
 def _update_bucket_readme(root: Path, bucket: str, name: str, *, user_invoked: bool) -> None:

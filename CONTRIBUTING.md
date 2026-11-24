@@ -12,12 +12,13 @@ Speculative guardrails, synthetic evals, and skills that bundle unrelated jobs a
 
 ## Before you open a pull request
 
+See [`docs/agents/feature-map.md`](./docs/agents/feature-map.md) for the repo's layers and entry points, then run the full verification gate (which includes boundaries, lint, guard parity, property invariants, and a throwaway `HOME` install/uninstall check):
+
 ```bash
 ./scripts/verify
-HOME="$(mktemp -d)" ./install.sh --all
 ```
 
-Both must pass. Keep the pull request to one change, and keep personal paths, machine names, and project names out of skills and `AGENTS.md`. Those belong in your private overlay at `~/.config/agent-kit/`.
+Keep the pull request to one change, and keep personal paths, machine names, and project names out of skills and `AGENTS.md`. Those belong in your private overlay at `~/.config/agent-kit/`.
 
 ## Security
 

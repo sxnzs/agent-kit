@@ -14,7 +14,12 @@ import re
 import sys
 from pathlib import Path
 
-from check_skills import discover_skills, is_quoted_yaml, parse_frontmatter, unquote_yaml
+from check_skills import (
+    discover_skills,
+    is_quoted_yaml,
+    parse_frontmatter,
+    unquote_yaml,
+)
 
 TOP_ROW_RE = re.compile(r"^\| \[([a-z0-9-]+)\]\(([^)]+)\) \| ([a-z-]+) \| (.*) \|$")
 BUCKET_ROW_RE = re.compile(r"^\* \[([a-z0-9-]+)\]\(([^)]+)\): (.*)$")
@@ -57,7 +62,7 @@ def rewrite(path: Path, transform, drift: list[str], write: bool) -> None:
         return
     old_lines = path.read_text(encoding="utf-8").split("\n")
     new_lines = [transform(line) for line in old_lines]
-    for number, (old, new) in enumerate(zip(old_lines, new_lines), start=1):
+    for number, (old, new) in enumerate(zip(old_lines, new_lines, strict=True), start=1):
         if old != new:
             drift.append(f"{path}:{number}: expected: {new.strip()}")
     if write and old_lines != new_lines:

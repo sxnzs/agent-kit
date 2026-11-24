@@ -3,13 +3,12 @@
 
 from __future__ import annotations
 
-import unittest
-from pathlib import Path
 import sys
+import unittest
+
+import check_prose
 
 sys.dont_write_bytecode = True
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-import check_prose  # noqa: E402
 
 
 class CheckProseTests(unittest.TestCase):

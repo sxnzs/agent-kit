@@ -1,0 +1,21 @@
+target-version = "py311"
+
+[lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes (unused imports, variables, undefined names)
+    "W",    # pycodestyle warnings
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "S",    # flake8-bandit (security sinks: shell=True, eval, exec, pickle, partial PATH)
+    "SIM",  # flake8-simplify (unclosed files, nested ifs)
+    "ERA",  # eradicate (forbid commented-out code)
+    "RUF",  # ruff-specific rules (unused noqa, ambiguous unicode)
+    "BLE",  # flake8-blind-except (no bare/blind Exception catches)
+    "EXE",  # flake8-executable (shebangs must match +x bit)
+    "FURB", # refurb
+]
+ignore = [
+    "E501", # line length handled by readability, not hard column wraps
+    "S603", # parameterized subprocess.run with shell=False is safe; S602/S607 stay enforced
+]

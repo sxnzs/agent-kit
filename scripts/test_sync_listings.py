@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import sys
 import tempfile
 import unittest
 from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from sync_listings import summary_of, sync, yaml_scalar
 

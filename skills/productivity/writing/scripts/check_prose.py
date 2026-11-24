@@ -43,7 +43,7 @@ RULES: tuple[Rule, ...] = (
         code="dash-in-prose",
         severity="ERROR",
         lang="any",
-        pattern=re.compile(r"[—–]|(?<=\S)\s-\s(?=\S)"),
+        pattern=re.compile(r"[\u2014\u2013]|(?<=\S)\s-\s(?=\S)"),
         hint="replace dash with a period or comma",
     ),
     Rule(
@@ -63,7 +63,7 @@ RULES: tuple[Rule, ...] = (
         lang="any",
         pattern=re.compile(
             r"\b(?:no\s+(?:es|son|solo)\s+[^.,;:\n]{2,45},\s*sino\b"
-            r"|it['’]s\s+not\s+[^.,;:\n]{2,45},\s*it['’]s\b"
+            r"|it['\u2019]s\s+not\s+[^.,;:\n]{2,45},\s*it['\u2019]s\b"
             r"|not\s+just\s+[^.,;:\n]{2,45},\s*but\b)",
             re.IGNORECASE,
         ),
@@ -119,7 +119,7 @@ RULES: tuple[Rule, ...] = (
         severity="WARN",
         lang="en",
         pattern=re.compile(
-            r"\b(?:delve(?:s|d|ing)?|foster(?:s|ed|ing)?|it['’]s\s+worth\s+noting"
+            r"\b(?:delve(?:s|d|ing)?|foster(?:s|ed|ing)?|it['\u2019]s\s+worth\s+noting"
             r"|importantly,|in\s+conclusion,|bottom\s+line:|genuinely)\b",
             re.IGNORECASE,
         ),

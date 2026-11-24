@@ -1,25 +1,45 @@
 #!/usr/bin/env bash
-# Unified Layer 2 verification gate for the kit.
+# Unified Layer 2 + Layer 3 verification gate for Amnesiac Agents.
+# Emits reviewable verification artifacts to artifacts/verify/ (git-ignored).
 set -uo pipefail
 export PYTHONDONTWRITEBYTECODE=1
 
 KIT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$KIT" || exit 1
 
+ARTIFACT_DIR="$KIT/artifacts/verify"
+mkdir -p "$ARTIFACT_DIR"
+
 FAILURES=0
 RESULTS=()
+SUMMARY_LINES=()
 
 run_stage() {
   local name="$1"
   shift
+  local start_s end_s elapsed status
+  start_s="$(date +%s)"
   echo
   echo "== $name"
   if "$@"; then
+    status="PASS"
     RESULTS+=("PASS  $name")
   else
+    status="FAIL"
     RESULTS+=("FAIL  $name")
     FAILURES=$((FAILURES + 1))
   fi
+  end_s="$(date +%s)"
+  elapsed=$((end_s - start_s))
+  SUMMARY_LINES+=("$(printf '{"stage": "%s", "status": "%s", "seconds": %d}' "$name" "$status" "$elapsed")")
+}
+
+check_python_lint() {
+  if ! command -v ruff >/dev/null 2>&1; then
+    echo "ERROR: ruff not found (brew install ruff, or uv tool install ruff)" >&2
+    return 1
+  fi
+  ruff check .
 }
 
 check_shell_scripts() {
@@ -51,6 +71,93 @@ check_shell_scripts() {
   return "$failed"
 }
 
+check_motion_tests() {
+  if ! command -v node >/dev/null 2>&1; then
+    echo "skipped: node is not installed"
+    return 0
+  fi
+  node --test skills/engineering/ui-design/references/motion/examples/motion.test.mjs
+}
+
+check_install_lifecycle() {
+  local tmp_home log_file rc=0
+  tmp_home="$(mktemp -d)"
+  log_file="$ARTIFACT_DIR/install-lifecycle.log"
+  if ! (
+    set -euo pipefail
+    echo "# Install -> Verify -> Uninstall lifecycle (throwaway HOME=$tmp_home)"
+    echo "## Step 1: install --all"
+    HOME="$tmp_home" ./install.sh --all
+    echo "## Step 2: verify installed links"
+    skill_count="$(find "$tmp_home/.agents/skills" -mindepth 1 -maxdepth 1 -type l | wc -l | tr -d ' ')"
+    echo "installed_skill_symlinks=$skill_count"
+    test -L "$tmp_home/.agents/AGENTS.md"
+    test -f "$tmp_home/.claude/settings.json"
+    test -f "$tmp_home/.codex/rules/agent-kit.rules"
+    test -L "$tmp_home/.gemini/config/skills"
+    echo "## Step 3: uninstall"
+    HOME="$tmp_home" ./install.sh --uninstall
+    echo "## Step 4: verify clean teardown"
+    test ! -L "$tmp_home/.agents/AGENTS.md"
+    test ! -L "$tmp_home/.gemini/config/skills"
+    echo "teardown=clean"
+  ) > "$log_file" 2>&1; then
+    rc=1
+  fi
+  rm -rf "$tmp_home"
+  if [ "$rc" -eq 0 ]; then
+    echo "ok: throwaway-HOME install/uninstall lifecycle clean (log: artifacts/verify/install-lifecycle.log)"
+  else
+    cat "$log_file" >&2
+  fi
+  return "$rc"
+}
+
+check_guard_probes() {
+  local log_file rc=0
+  log_file="$ARTIFACT_DIR/guard-probes.log"
+  if ! (
+    set -euo pipefail
+    echo "# Live guard CLI stdin/stdout probes"
+    echo "## Probe 1 (claude deny)"
+    out="$(printf '%s\n' '{"tool_name":"Bash","tool_input":{"command":"rm -rf /"}}' | python3 guard/guard.py --host claude)"
+    echo "$out"
+    printf '%s\n' "$out" | grep -q '"permissionDecision": "deny"'
+    echo "## Probe 2 (claude ask)"
+    out="$(printf '%s\n' '{"tool_name":"Bash","tool_input":{"command":"git push origin main"}}' | python3 guard/guard.py --host claude)"
+    echo "$out"
+    printf '%s\n' "$out" | grep -q '"permissionDecision": "ask"'
+    echo "## Probe 3 (codex allow on ask rule, handled by rules file)"
+    out="$(printf '%s\n' '{"tool_name":"Bash","tool_input":{"command":"git push origin main"}}' | python3 guard/guard.py --host codex)"
+    echo "stdout=${out:-<empty>}"
+    test -z "$out"
+    echo "## Probe 4 (claude allow on safe read)"
+    out="$(printf '%s\n' '{"tool_name":"Bash","tool_input":{"command":"git status"}}' | python3 guard/guard.py --host claude)"
+    echo "stdout=${out:-<empty>}"
+    test -z "$out"
+  ) > "$log_file" 2>&1; then
+    rc=1
+  fi
+  if [ "$rc" -eq 0 ]; then
+    echo "ok: 4/4 live guard CLI probes passed (log: artifacts/verify/guard-probes.log)"
+  else
+    cat "$log_file" >&2
+  fi
+  return "$rc"
+}
+
+check_invariants() {
+  local log_file
+  log_file="$ARTIFACT_DIR/invariants.log"
+  python3 scripts/test_invariants.py > "$log_file" 2>&1
+  local rc=$?
+  cat "$log_file"
+  return "$rc"
+}
+
+run_stage "architectural boundaries" python3 scripts/check_boundaries.py
+run_stage "boundary unit tests" python3 scripts/test_check_boundaries.py
+run_stage "python lint (ruff)" check_python_lint
 run_stage "guard checks" ./guard/check.sh
 
 INSTALLED_KIT="$(readlink -f "$HOME/.agents/agent-kit" 2>/dev/null || true)"
@@ -65,7 +172,21 @@ run_stage "listings match frontmatter" python3 scripts/sync_listings.py --check
 run_stage "listings sync unit tests" python3 scripts/test_sync_listings.py
 run_stage "prose linter unit tests" python3 skills/productivity/writing/scripts/test_check_prose.py
 run_stage "prose linter (SKILL.md)" python3 skills/productivity/writing/scripts/check_prose.py --strict skills/*/*/SKILL.md
+run_stage "motion JS unit tests" check_motion_tests
+run_stage "property-based invariants" check_invariants
+run_stage "live guard CLI probes" check_guard_probes
+run_stage "install/uninstall lifecycle" check_install_lifecycle
 run_stage "shell syntax" check_shell_scripts
+
+{
+  printf '{\n  "failures": %d,\n  "stages": [\n' "$FAILURES"
+  for i in "${!SUMMARY_LINES[@]}"; do
+    sep=","
+    [ "$i" -eq $((${#SUMMARY_LINES[@]} - 1)) ] && sep=""
+    printf '    %s%s\n' "${SUMMARY_LINES[$i]}" "$sep"
+  done
+  printf '  ]\n}\n'
+} > "$ARTIFACT_DIR/summary.json"
 
 echo
 echo "== summary"
@@ -77,4 +198,4 @@ if [ "$FAILURES" -gt 0 ]; then
   echo "verify: $FAILURES stage(s) failed" >&2
   exit 1
 fi
-echo "verify: all checks passed"
+echo "verify: all checks passed (artifacts: artifacts/verify/)"

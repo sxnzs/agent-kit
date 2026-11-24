@@ -341,11 +341,12 @@ def validate_skills(skills_dir: Path, check_symlinks: Path | None) -> list[str]:
                     f"allowed keys are {sorted(ALLOWED_FM_KEYS)}"
                 )
             for key, raw_val in fm.items():
-                if not is_quoted_yaml(raw_val):
-                    if ": " in raw_val or (raw_val and raw_val[0] in YAML_INDICATOR_CHARS):
-                        errors.append(
-                            f"{skill_md}: frontmatter {key!r} must be quoted (contains ': ' or starts with YAML indicator)"
-                        )
+                if not is_quoted_yaml(raw_val) and (
+                    ": " in raw_val or (raw_val and raw_val[0] in YAML_INDICATOR_CHARS)
+                ):
+                    errors.append(
+                        f"{skill_md}: frontmatter {key!r} must be quoted (contains ': ' or starts with YAML indicator)"
+                    )
             name_val = fm.get("name", "")
             if is_quoted_yaml(name_val):
                 errors.append(f"{skill_md}: unquote frontmatter name ({name_val})")

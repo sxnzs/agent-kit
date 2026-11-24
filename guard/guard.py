@@ -28,7 +28,7 @@ CODE_KEYS = ("code", "script")
 # Keys that may carry an apply_patch body. File content keys (content, new_string)
 # are not scanned, so docs that quote a patch header can still be written.
 PATCH_KEYS = ("input", "patch", "patchText", "command", "cmd")
-PATCH_FILE_RE = re.compile(r"^\*\*\* (?:(?:Add|Update|Delete) File|Move to): (.+)$", re.M)
+PATCH_FILE_RE = re.compile(r"^\*\*\* (?:(?:Add|Update|Delete) File|Move to): (.+)$", re.MULTILINE)
 # Values of these keys are prose, not commands: a code mode script that writes a doc
 # quoting a blocked command must not be blocked by it. Template literals holding ${}
 # still contain code, so they stay as they are.
@@ -152,7 +152,7 @@ def run_hook(host):
         if not isinstance(tool_input, dict):
             tool_input = {"command": tool_input}
         decision, reason = evaluate(load_policy(), event.get("tool_name"), tool_input)
-    except Exception as exc:
+    except (json.JSONDecodeError, OSError, KeyError, TypeError, ValueError, re.error) as exc:
         print(f"agent-kit guard error: {exc}", file=sys.stderr)
         if host == "claude":
             reply("ask", f"Guard error, so this call was not checked: {exc}")
@@ -307,7 +307,7 @@ CASES = [
     # a script that writes or edits prose keeps working when that prose quotes a blocked command
     ("exec", {"code": f"await tools.write({{ path: '/x.md', content: '{DL}' }})"}, None),
     ("exec", {"code": f"await tools.edit({{ path: '/x.md', edits: [{{ oldText: '{RH}', newText: 'x' }}] }})"}, None),
-    ("exec", {"code": f"await tools.write({{ path: '/x.md', content: " + chr(96) + "{DL}" + chr(96) + " })"}, None),
+    ("exec", {"code": "await tools.write({ path: '/x.md', content: " + chr(96) + "{DL}" + chr(96) + " })"}, None),
     ("exec", {"code": "await tools.write({ path: '/x.md', content: " + chr(96) + "x " + chr(36) + "{ " + RH + "}" + chr(96) + " })"}, "deny"),
     ("exec", {"code": f"await tools.bash({{ command: '{DL}' }})"}, "deny"),
     # file tools
