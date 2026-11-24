@@ -7,6 +7,7 @@ Daily software engineering workflows.
 * [agent-setup](agent-setup/SKILL.md): Onboard a repository for agents and fix recurring session failures without a full rewrite.
 * [bonsai](bonsai/SKILL.md): Refactor a whole repo in five gated phases so boundaries, bans, and checks live in tools instead of prose.
 * [fold-subagent](fold-subagent/SKILL.md): Fold an unnecessary subagent, router, or specialist into skills and tools in the main loop.
+* [harness-audit](harness-audit/SKILL.md): Audit local agent CLI and desktop setups using raw session telemetry, hook benchmarks, and a fresh red team check.
 * [retro](retro/SKILL.md): Run a session retrospective and promote repeated corrections downward into deterministic checks.
 * [ship](ship/SKILL.md): Commit and push finished work cleanly across every touched repository.
 * [spec-build](spec-build/SKILL.md): Turn settled decisions into local specs, wayfinding maps, and vertical TDD slices.

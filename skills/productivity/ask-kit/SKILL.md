@@ -46,6 +46,7 @@ Skills marked **(user-invoked)** must be triggered explicitly (`/name` in Claude
 - `bonsai` (user-invoked): Refactor a whole repo in five gated phases so boundaries, bans, and checks live in tools instead of prose.
 - `agent-setup` (user-invoked): Onboard a repository for agents and fix recurring session failures without a full rewrite.
 - `fold-subagent` (user-invoked): Fold an unnecessary subagent, router, or specialist into skills and tools in the main loop.
+- `harness-audit` (user-invoked): Audit local agent CLI and desktop setups using raw session telemetry, hook benchmarks, and a fresh red team check.
 - `agent-architecture` (auto): Design, review, or simplify an AI agent or harness.
 - `skill-hygiene` (auto): Create, audit, deduplicate, or prune skills, tool descriptions, and system prompts.
 

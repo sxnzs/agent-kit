@@ -32,7 +32,7 @@ Common workflow stages:
 | Build & verify | `/prewalk` | `debug`, `verify-artifacts` |
 | Review & ship | `/ship`, `/retro`, `/handoff` | `diff-review` |
 | Write & explain | `/teach` | `writing`, `explain-code` |
-| Harness & repo setup | `/bonsai`, `/agent-setup`, `/fold-subagent` | `agent-architecture`, `skill-hygiene` |
+| Harness & repo setup | `/bonsai`, `/agent-setup`, `/fold-subagent`, `/harness-audit` | `agent-architecture`, `skill-hygiene` |
 
 ## 3. Keep machines in sync
 

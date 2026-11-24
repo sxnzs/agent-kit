@@ -1,0 +1,5 @@
+interface:
+  display_name: Harness Audit
+  short_description: Audit local agent CLI and desktop setups using raw session telemetry, hook benchmarks, and a fresh red team check.
+policy:
+  allow_implicit_invocation: false

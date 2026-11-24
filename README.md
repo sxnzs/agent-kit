@@ -10,7 +10,7 @@ You edit one place (`~/agent-kit`). Every host reads it through symlinks.
 What you get:
 
 - **One instruction file** ([`AGENTS.md`](./AGENTS.md)) shared by every host.
-- **23 skills** that load on demand, split into user-invoked workflows and model-invoked helpers.
+- **24 skills** that load on demand, split into user-invoked workflows and model-invoked helpers.
 - **A guard** ([`guard/policy.json`](./guard/policy.json)) that blocks destructive commands and asks before commits, pushes, publishes, deploys, and sends, with the same rules on every host.
 - **A fresh-context verifier** subagent per host, for black box checks of finished work.
 
@@ -90,7 +90,7 @@ Skills are split into **user-invoked** (trigger explicitly: `/name` in Claude Co
 ```
 
 <details>
-<summary>User-invoked skills (12)</summary>
+<summary>User-invoked skills (13)</summary>
 
 | Skill | Bucket | Purpose |
 |---|---|---|
@@ -100,6 +100,7 @@ Skills are split into **user-invoked** (trigger explicitly: `/name` in Claude Co
 | [bonsai](./skills/engineering/bonsai/SKILL.md) | engineering | Refactor a whole repo in five gated phases so boundaries, bans, and checks live in tools instead of prose. |
 | [fold-subagent](./skills/engineering/fold-subagent/SKILL.md) | engineering | Fold an unnecessary subagent, router, or specialist into skills and tools in the main loop. |
 | [handoff](./skills/productivity/handoff/SKILL.md) | productivity | Delegate primary-source research, write cross-session handoffs, and script human-only setup wizards. |
+| [harness-audit](./skills/engineering/harness-audit/SKILL.md) | engineering | Audit local agent CLI and desktop setups using raw session telemetry, hook benchmarks, and a fresh red team check. |
 | [next](./skills/productivity/next/SKILL.md) | productivity | Read the current state of the work and recommend one concrete next step. |
 | [prewalk](./skills/productivity/prewalk/SKILL.md) | productivity | Land the first real slice or opening section and hand off the live trajectory and check gate to a fast worker. |
 | [retro](./skills/engineering/retro/SKILL.md) | engineering | Run a session retrospective and promote repeated corrections downward into deterministic checks. |

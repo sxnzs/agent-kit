@@ -25,7 +25,7 @@ Canonical entry points, architectural layers, and runtime verification surfaces 
    - `python3 guard/guard.py --test`: runs the 197 built-in policy cases; `node guard/parity.mjs` asserts 100% Python/JS parity.
 
 3. **Skill catalog and listing sync (`scripts/check_skills.py`, `scripts/sync_listings.py`)**
-   - `python3 scripts/check_skills.py [--check-links <dir>]`: validates frontmatter, Codex twins, local links, and skill references across all 23 skills.
+   - `python3 scripts/check_skills.py [--check-links <dir>]`: validates frontmatter, Codex twins, local links, and skill references across all skills.
    - `python3 scripts/sync_listings.py [--check]`: keeps `README.md`, bucket `README.md`s, `ask-kit`, and `agents/openai.yaml` summaries synchronized with `SKILL.md` frontmatter.
 
 4. **Verification harness (`./scripts/verify`)**
